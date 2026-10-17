@@ -23,9 +23,9 @@ import java.util.Map;
 /**
  * 2026-08-03 playwright替代wkhtmltopdf
  * Playwright工具类，实现HTML转PDF功能
- * 使用Microsoft Playwright Java SDK 1.61.0 + Chromium 149.0.7827.55
- * Chromium浏览器需通过部署文档预先安装，运行时不涉及网络下载，适用于内网无网络环境
- * 浏览器路径通过环境变量PLAYWRIGHT_BROWSERS_PATH指定
+ * 依赖：使用前需自行引入 com.microsoft.playwright:playwright（见README依赖说明）
+ * 驱动：首次运行由Playwright自动下载至缓存目录，离线环境可按Playwright官方文档预置
+ * 浏览器：Chromium需预先安装，路径由环境变量PLAYWRIGHT_BROWSERS_PATH指定
  */
 public final class PlaywrightUtil {
 
@@ -309,7 +309,7 @@ public final class PlaywrightUtil {
     /**
      * 2026-08-03 playwright替代wkhtmltopdf
      * 检查Chromium浏览器是否已部署
-     * 内网环境下浏览器需通过部署文档预先安装，代码不涉及任何网络下载或环境部署
+     * 浏览器需预先安装，路径由环境变量PLAYWRIGHT_BROWSERS_PATH指定（未设置时使用系统默认缓存目录）
      * @return true=浏览器已部署, false=浏览器未部署
      */
     private static final boolean p_checkBrowser() {
@@ -328,14 +328,14 @@ public final class PlaywrightUtil {
         File browsersDir = new File(browsersPath);
         if (!browsersDir.exists()) {
             LogUtil.error("PlaywrightUtil_p_checkBrowser_1", "Chromium浏览器目录不存在", browsersPath,
-                    "请参照部署文档安装Chromium浏览器，并设置环境变量PLAYWRIGHT_BROWSERS_PATH");
+                    "请先安装Chromium浏览器（可参考Playwright官方文档），并设置环境变量PLAYWRIGHT_BROWSERS_PATH");
             return false;
         }
         // 检查是否有chromium开头的子目录
         File[] children = browsersDir.listFiles();
         if (children == null || children.length == 0) {
             LogUtil.error("PlaywrightUtil_p_checkBrowser_2", "Chromium浏览器目录为空", browsersPath,
-                    "请参照部署文档安装Chromium浏览器");
+                    "请先安装Chromium浏览器（可参考Playwright官方文档）");
             return false;
         }
         boolean hasChromium = false;
@@ -348,7 +348,7 @@ public final class PlaywrightUtil {
         }
         if (!hasChromium) {
             LogUtil.error("PlaywrightUtil_p_checkBrowser_3", "未找到Chromium浏览器", browsersPath,
-                    "请参照部署文档安装Chromium浏览器");
+                    "请先安装Chromium浏览器（可参考Playwright官方文档）");
             return false;
         }
         return true;

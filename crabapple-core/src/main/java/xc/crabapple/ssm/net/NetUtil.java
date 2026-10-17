@@ -115,15 +115,15 @@ public final class NetUtil {
         requestConfigBuilder.setConnectionRequestTimeout(timeout);
         requestConfigBuilder.setSocketTimeout(timeout);
         RequestConfig requestConfig = requestConfigBuilder.build();
-        // 创建一个信任所有证书的SSLContext
+        // 2026-10-17 安全默认：未指定证书时使用JVM信任库与标准主机名校验；指定证书（自签名/内网）时跳过主机名校验
         SSLContext sslContext = HttpsUtil.p_getSSLContext(cerPath);
-        // 创建一个信任所有主机名的HostnameVerifier
-        HostnameVerifier hostnameVerifier = NoopHostnameVerifier.INSTANCE;
         HttpClientBuilder httpClientBuilder = HttpClients.custom();
         httpClientBuilder.setDefaultRequestConfig(requestConfig);
         httpClientBuilder.setDefaultCookieStore(cookieStore);
         httpClientBuilder.setSSLContext(sslContext);
-        httpClientBuilder.setSSLHostnameVerifier(hostnameVerifier);
+        if(!StringUtil.isBlank(cerPath)){
+            httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+        }
         CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
         CloseableHttpResponse closeableHttpResponse = null;
         InputStream inputStream = null;
@@ -341,11 +341,13 @@ public final class NetUtil {
      */
     private static final CloseableHttpClient p_createHttpClient(final String cerPath) {
         try {
+            // 2026-10-17 安全默认：未指定证书时使用标准主机名校验；指定证书（自签名/内网）时跳过主机名校验
             final SSLContext sslContext = HttpsUtil.p_getSSLContext(cerPath);
-            final SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+            final SSLConnectionSocketFactory sslConnectionSocketFactory = StringUtil.isBlank(cerPath)
+                    ? new SSLConnectionSocketFactory(sslContext)
+                    : new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
             final HttpClientBuilder httpClientBuilder = HttpClients.custom();
             httpClientBuilder.setSSLSocketFactory(sslConnectionSocketFactory);
-            httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
             final CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
             return closeableHttpClient;
         } catch (Throwable throwable) {

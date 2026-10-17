@@ -38,7 +38,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -316,15 +315,42 @@ public final class HttpsUtil {
      * 2025-08-11 超时时间配置最大值
      */
     public static final CloseableHttpClient getHttpClient(final String password, final String jksUrl, final String p12Url, final Map<String, List<String>> cookieMap){
-        SSLContext sslContext = null;
-        if(StringUtil.isBlank(password, jksUrl, p12Url)){
-            sslContext = p_getSSLContext(null, null, null);
-        }else{
-            sslContext = p_getSSLContext(password, jksUrl, p12Url);
+        // 2026-10-17 安全默认：未指定证书时使用JVM信任库与标准主机名校验；如需信任全部证书请使用 getTrustAllHttpClient()
+        SSLContext sslContext = StringUtil.isBlank(password, jksUrl, p12Url) ? p_getDefaultSSLContext() : p_getSSLContext(password, jksUrl, p12Url);
+        if(sslContext == null){
+            return null;
         }
+        return p_buildHttpClient(new SSLConnectionSocketFactory(sslContext), cookieMap);
+    }
+
+    /**
+     * 2026-10-17
+     * 获取信任全部证书的HttpClient（跳过证书与主机名校验）
+     * 安全提示：存在中间人攻击风险，仅用于内网自签名证书、测试等明确场景，生产环境请使用 getHttpClient()
+     */
+    public static final CloseableHttpClient getTrustAllHttpClient(){
+        return getTrustAllHttpClient(null);
+    }
+
+    /**
+     * 2026-10-17
+     * 获取信任全部证书的HttpClient（跳过证书与主机名校验），携带cookie
+     * 安全提示：存在中间人攻击风险，仅用于内网自签名证书、测试等明确场景
+     */
+    public static final CloseableHttpClient getTrustAllHttpClient(final Map<String, List<String>> cookieMap){
+        SSLContext sslContext = p_getTrustAllSSLContext();
+        if(sslContext == null){
+            return null;
+        }
+        return p_buildHttpClient(new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE), cookieMap);
+    }
+
+    /**
+     * 2026-10-17
+     * 构建HttpClient
+     */
+    private static final CloseableHttpClient p_buildHttpClient(final SSLConnectionSocketFactory sslConnectionSocketFactory, final Map<String, List<String>> cookieMap){
         try{
-            // 配置支持https的ssl证书
-            SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
             Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                     .register("http", new PlainConnectionSocketFactory())
                     .register("https", sslConnectionSocketFactory)
@@ -360,7 +386,7 @@ public final class HttpsUtil {
             final CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
             return closeableHttpClient;
         }catch(Throwable throwable){
-            LogUtil.error("HttpsUtil_p_getHttpClient_t1", throwable);
+            LogUtil.error("HttpsUtil_p_buildHttpClient_t1", throwable);
             return null;
         }
     }
@@ -370,40 +396,47 @@ public final class HttpsUtil {
      * 创建SSLSocketFactory实例
      */
     public static final SSLSocketFactory getSSLSocketFactory() {
-        SSLSocketFactory sslSocketFactory = getSSLSocketFactory("");
-        return sslSocketFactory;
+        SSLContext sslContext = p_getDefaultSSLContext();
+        if(sslContext == null){
+            return null;
+        }
+        return sslContext.getSocketFactory();
     }
 
     /**
      * 2025-01-03
      * 创建SSLSocketFactory实例
+     * 2026-10-17 安全默认：未指定证书时使用JVM信任库与标准校验
      */
     public static final SSLSocketFactory getSSLSocketFactory(final String password, final String jksUrl, final String p12Url) {
-        if(StringUtil.isBlank(password, jksUrl, p12Url)){
-            SSLContext sslContext = p_getSSLContext(null, null, null);
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-            return sslSocketFactory;
+        SSLContext sslContext = StringUtil.isBlank(password, jksUrl, p12Url) ? p_getDefaultSSLContext() : p_getSSLContext(password, jksUrl, p12Url);
+        if(sslContext == null){
+            return null;
         }
-        SSLContext sslContext = p_getSSLContext(password, jksUrl, p12Url);
-        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-        return sslSocketFactory;
+        return sslContext.getSocketFactory();
     }
 
     public static final SSLSocketFactory getSSLSocketFactory(final String cerPath) {
         SSLContext sslContext = p_getSSLContext(cerPath);
-        SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-        return sslSocketFactory;
+        if(sslContext == null){
+            return null;
+        }
+        return sslContext.getSocketFactory();
     }
 
     /**
-     * 2025-01-03
-     * 获取绕过ca-ssl证书的sslContext对象，直接信任
-     * @return
+     * 2026-10-17
+     * 获取信任全部证书的SSLSocketFactory
+     * 安全提示：存在中间人攻击风险，仅用于内网自签名证书、测试等明确场景
      */
-    private static final SSLContext p_getSSLContext(){
-        SSLContext sslContext = p_getSSLContext(null, null, null);
-        return sslContext;
+    public static final SSLSocketFactory getTrustAllSSLSocketFactory() {
+        SSLContext sslContext = p_getTrustAllSSLContext();
+        if(sslContext == null){
+            return null;
+        }
+        return sslContext.getSocketFactory();
     }
+
 
     /**
      * 2025-01-03
@@ -414,29 +447,9 @@ public final class HttpsUtil {
      * @return
      */
     private static final SSLContext p_getSSLContext(final String password, final String jksUrl, final String p12Url){
-        // 获取绕过ca-ssl证书的sslContext对象，直接信任
+        // 2026-10-17 安全默认：未指定证书时使用默认SSLContext（JVM信任库+标准校验），不再默认信任全部证书
         if(StringUtil.isBlank(password, jksUrl, p12Url)){
-            try{
-                SSLContext sslContext = SSLContext.getInstance("TLS");
-                // 实现一个X509TrustManager接口，用于绕过验证，不用修改里面的方法
-                X509TrustManager trustManager = new X509TrustManager(){
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers(){
-                        return null;
-                    }
-                    @Override
-                    public void checkClientTrusted(final X509Certificate[] arg0, final String arg1){
-                    }
-                    @Override
-                    public void checkServerTrusted(final X509Certificate[] arg0, final String arg1){
-                    }
-                };
-                sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
-                return sslContext;
-            }catch(Throwable throwable){
-                LogUtil.error("HttpClientUtil_createIgnoreVerifySSL_e1", throwable);
-                return null;
-            }
+            return p_getDefaultSSLContext();
         }
         // 获取指定证书的sslContext对象
         try{
@@ -454,7 +467,39 @@ public final class HttpsUtil {
             sslContext.init(keyManagerArray, trustManagerArray, null);
             return sslContext;
         }catch (Throwable throwable){
-            LogUtil.error("HttpsUtil_getSSLContext_t1", throwable, password, jksUrl, p12Url);
+            LogUtil.error("HttpsUtil_getSSLContext_t1", throwable, jksUrl, p12Url);
+            return null;
+        }
+    }
+
+    /**
+     * 2026-10-17
+     * 获取默认SSLContext（JVM信任库+标准校验）
+     */
+    private static final SSLContext p_getDefaultSSLContext(){
+        try{
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, null, new SecureRandom());
+            return sslContext;
+        }catch(Throwable throwable){
+            LogUtil.error("HttpsUtil_p_getDefaultSSLContext_t1", throwable);
+            return null;
+        }
+    }
+
+    /**
+     * 2026-10-17
+     * 获取信任全部证书的SSLContext
+     * 安全提示：跳过证书校验存在中间人攻击风险，仅供内网自签名证书、测试等明确场景使用
+     */
+    private static final SSLContext p_getTrustAllSSLContext(){
+        try{
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            TrustManager[] trustManagers = {new MyX509TrustManager()};
+            sslContext.init(null, trustManagers, new SecureRandom());
+            return sslContext;
+        }catch(Throwable throwable){
+            LogUtil.error("HttpsUtil_p_getTrustAllSSLContext_t1", throwable);
             return null;
         }
     }
@@ -473,7 +518,7 @@ public final class HttpsUtil {
             keyStore.load(fileInputStream, password.toCharArray());
             return keyStore;
         }catch (Throwable throwable){
-            LogUtil.error("HttpsUtil_getKeyStore_t1", throwable, jksUrl, password, type);
+            LogUtil.error("HttpsUtil_getKeyStore_t1", throwable, jksUrl, type);
             return null;
         }finally {
             IOUtil.close(fileInputStream);
@@ -502,15 +547,13 @@ public final class HttpsUtil {
     }
 
     public static final SSLContext p_getSSLContext(final String cerPath) {
+        // 2026-10-17 安全默认：未指定证书时使用默认SSLContext（JVM信任库+标准校验），不再默认信任全部证书
+        if (StringUtil.isBlank(cerPath)) {
+            return p_getDefaultSSLContext();
+        }
         ByteArrayInputStream bais = null;
         BufferedReader br = null;
         try {
-            if (StringUtil.isBlank(cerPath)) {
-                SSLContext sslContext= SSLContext.getInstance("TLS");
-                TrustManager[] trustManagers = {new MyX509TrustManager()};
-                sslContext.init(null, trustManagers, new java.security.SecureRandom());
-                return sslContext;
-            }
             String text = FileUtil.fileReadText(cerPath);
             text = StringUtil.deleteAll(text, "\n", "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----");
             // 将Base64编码的字符串解码为字节数组
@@ -531,7 +574,7 @@ public final class HttpsUtil {
             sslContext.init(null, trustManagers, new SecureRandom());
             return sslContext;
         } catch (Throwable e) {
-            LogUtil.error("NetUtil_createTrustAllSSLContext_e369", e);
+            LogUtil.error("HttpsUtil_p_getSSLContextByCer_e1", e);
             return null;
         }finally {
             IOUtil.close(bais, br);
@@ -539,51 +582,14 @@ public final class HttpsUtil {
     }
 
     private static final CloseableHttpClient getHttpClient(final String cerPath, final Map<String, List<String>> cookieMap) {
-        try {
-            SSLContext sslContext = p_getSSLContext(cerPath);
-            try{
-                // 配置支持https的ssl证书
-                SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
-                Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                        .register("http", new PlainConnectionSocketFactory())
-                        .register("https", sslConnectionSocketFactory)
-                        .build();
-                PoolingHttpClientConnectionManager httpClientConnectionManager = new PoolingHttpClientConnectionManager(registry);
-                httpClientConnectionManager.setMaxTotal(1000);
-                HttpClientBuilder httpClientBuilder = HttpClients.custom().setConnectionManager(httpClientConnectionManager);
-                httpClientBuilder = httpClientBuilder.setConnectionManager(httpClientConnectionManager);
-                // 添加超时配置，单位毫秒
-                final Integer timeout = 60000;
-                RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
-                requestConfigBuilder.setConnectionRequestTimeout(timeout, TimeUnit.MILLISECONDS);
-                requestConfigBuilder.setResponseTimeout(timeout, TimeUnit.MILLISECONDS);
-                RequestConfig requestConfig = requestConfigBuilder.build();
-                httpClientBuilder.setDefaultRequestConfig(requestConfig);
-                // 设置cookie
-                CookieStore cookieStore = new BasicCookieStore();
-                if(!CollectionUtil.isBlank(cookieMap)){
-                    Set<String> keySet = cookieMap.keySet();
-                    Iterator<String> iterator = keySet.iterator();
-                    while(iterator.hasNext()){
-                        final String name = iterator.next();
-                        final List<String> vvvList = cookieMap.get(name);
-                        String value = vvvList.get(0);
-                        String domain = vvvList.get(1);
-                        String path = vvvList.get(2);
-                        cookieStore = setCookieStore(cookieStore, name, value, domain, path, false);
-                    }
-                    httpClientBuilder.setDefaultCookieStore(cookieStore);
-                }
-                //
-                final CloseableHttpClient closeableHttpClient = httpClientBuilder.build();
-                return closeableHttpClient;
-            }catch(Throwable e){
-                LogUtil.error("HttpsUtil_getHttpClient_e544", e);
-                return null;
-            }
-        } catch (Throwable e) {
-            LogUtil.error("HttpsUtil_getHttpClient_e548", e);
+        SSLContext sslContext = p_getSSLContext(cerPath);
+        if(sslContext == null){
             return null;
         }
+        // 未指定证书时使用标准主机名校验；指定证书（自签名/内网）时跳过主机名校验
+        SSLConnectionSocketFactory sslConnectionSocketFactory = StringUtil.isBlank(cerPath)
+                ? new SSLConnectionSocketFactory(sslContext)
+                : new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+        return p_buildHttpClient(sslConnectionSocketFactory, cookieMap);
     }
 }

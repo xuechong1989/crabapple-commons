@@ -177,7 +177,7 @@ public final class Sm4Util {
         BouncyCastleUtil.addProvider();
         p_checkKey(key);
         if(StringUtil.isBlank(cipherStr)) {
-            LogUtil.error("Sm4Util_decrypt_1", "sm4 decrypt cipherStr is null", key, iv, cipherStr, modeName, padding);
+            LogUtil.error("Sm4Util_decrypt_1", "sm4 decrypt cipherStr is null", cipherStr, modeName, padding);
             return null;
         }
         try{
@@ -185,13 +185,13 @@ public final class Sm4Util {
             byte[] cipherData = Base64.decode(cipherStr);
             byte[] srcData = p_decrypt(keyData, iv, cipherData, modeName, padding);
             if(CollectionUtil.isBlank(srcData)){
-                LogUtil.error("Sm4Util_decrypt_2", "数据为空", key, iv, cipherStr, modeName, padding);
+                LogUtil.error("Sm4Util_decrypt_2", "数据为空", cipherStr, modeName, padding);
                 return null;
             }
             final String str = new String(srcData, ENCODING);
             return str;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_decrypt_t1", throwable, key, iv, cipherStr, modeName, padding);
+            LogUtil.error("Sm4Util_decrypt_t1", throwable, cipherStr, modeName, padding);
             return null;
         }
     }
@@ -389,7 +389,7 @@ public final class Sm4Util {
             File fileResult = p_inputStream2file(inputStream, cipherFile);
             return fileResult;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_decryptFile_t1", throwable, key);
+            LogUtil.error("Sm4Util_decryptFile_t1", throwable);
             return null;
         } finally {
             IOUtil.close(inputStream, fileInputStream);
@@ -437,7 +437,7 @@ public final class Sm4Util {
             IOUtils.copy(inputStream, outputStream);
             return "success-decrypt";
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_decryptFile_t3", throwable, key);
+            LogUtil.error("Sm4Util_decryptFile_t3", throwable);
             return null;
         } finally {
             IOUtil.close(outputStream, inputStream);
@@ -519,7 +519,7 @@ public final class Sm4Util {
             return inputStream;
         }catch(Throwable throwable){
             IOUtil.close(inputStream);
-            LogUtil.error("Sm4Util_decryptFileReturnInputStream_t1", throwable, key);
+            LogUtil.error("Sm4Util_decryptFileReturnInputStream_t1", throwable);
             return null;
         } finally {
             IOUtil.close(fileInputStream, outputStream);
@@ -552,7 +552,7 @@ public final class Sm4Util {
         BouncyCastleUtil.addProvider();
         p_checkKey(key);
         if(CollectionUtil.isBlank(plainBytes)) {
-            LogUtil.error("Sm4Util_encryptBytes_1", "sm4 encryptBytes plaintextBytes is null", key);
+            LogUtil.error("Sm4Util_encryptBytes_1", "sm4 encryptBytes plaintextBytes is null");
             return null;
         }
         try{
@@ -560,7 +560,7 @@ public final class Sm4Util {
             byte[] bytes = p_encrypt(keyData, iv, plainBytes, modeName, padding);
             return bytes;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_encryptBytes_t1", throwable, key);
+            LogUtil.error("Sm4Util_encryptBytes_t1", throwable);
             return null;
         }
     }
@@ -591,7 +591,7 @@ public final class Sm4Util {
         BouncyCastleUtil.addProvider();
         p_checkKey(key);
         if(CollectionUtil.isBlank(cipherBytes)) {
-            LogUtil.error("Sm4Util_decryptBytes_5", "sm4 decryptBytes cipherBytes is null", key);
+            LogUtil.error("Sm4Util_decryptBytes_5", "sm4 decryptBytes cipherBytes is null");
             return null;
         }
         try{
@@ -599,7 +599,7 @@ public final class Sm4Util {
             byte[] bytes = p_decrypt(keyData, iv, cipherBytes, modeName, padding);
             return bytes;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_decryptBytes_t5", throwable, key);
+            LogUtil.error("Sm4Util_decryptBytes_t5", throwable);
             return null;
         }
     }
@@ -626,13 +626,13 @@ public final class Sm4Util {
             byte[] keyData = key.getBytes(ENCODING);
             Cipher cipher = p_generateCipher(Cipher.ENCRYPT_MODE, keyData, iv, modeName, padding);
             if(cipher == null){
-                LogUtil.error("Sm4Util_encryptReturnInputStream_2", "sm4 encryptReturnInputStream cipher is null", key);
+                LogUtil.error("Sm4Util_encryptReturnInputStream_2", "sm4 encryptReturnInputStream cipher is null");
                 return null;
             }
             CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
             return cipherInputStream;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_encryptReturnInputStream_t1", throwable, key);
+            LogUtil.error("Sm4Util_encryptReturnInputStream_t1", throwable);
             return null;
         }
     }
@@ -658,13 +658,13 @@ public final class Sm4Util {
             byte[] keyData = key.getBytes(ENCODING);
             Cipher cipher = p_generateCipher(Cipher.DECRYPT_MODE, keyData, iv, modeName, padding);
             if(cipher == null){
-                LogUtil.error("Sm4Util_decryptReturnInputStream_2", "sm4 decryptReturnInputStream cipher is null", key);
+                LogUtil.error("Sm4Util_decryptReturnInputStream_2", "sm4 decryptReturnInputStream cipher is null");
                 return null;
             }
             CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
             return cipherInputStream;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_decryptReturnInputStream_t1", throwable, key);
+            LogUtil.error("Sm4Util_decryptReturnInputStream_t1", throwable);
             return null;
         }
     }
@@ -675,7 +675,7 @@ public final class Sm4Util {
             byte[] bytes = cipher.doFinal(data);
             return bytes;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_p_encrypt_t1", throwable, key);
+            LogUtil.error("Sm4Util_p_encrypt_t1", throwable);
             return null;
         }
     }
@@ -686,7 +686,7 @@ public final class Sm4Util {
             byte[] bytes = cipher.doFinal(cipherText);
             return bytes;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_p_decrypt_t1", throwable, key);
+            LogUtil.error("Sm4Util_p_decrypt_t1", throwable);
             return null;
         }
     }
@@ -717,7 +717,7 @@ public final class Sm4Util {
             cipher.init(mode, sm4Key, ivParameterSpec);
             return cipher;
         }catch(Throwable throwable){
-            LogUtil.error("Sm4Util_p_generateCipher_t1", throwable, key);
+            LogUtil.error("Sm4Util_p_generateCipher_t1", throwable);
             return null;
         }
     }

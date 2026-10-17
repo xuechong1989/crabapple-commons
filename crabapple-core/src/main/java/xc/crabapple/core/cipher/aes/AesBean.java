@@ -14,7 +14,7 @@ public final class AesBean extends BeanBase {
     private Object value;  //原文，明文或密文
     private Integer level = 256;  //加密等级，即密钥长度，取值为 128/192/256，默认值256
     //pkcs填充模式，算法/模式/补码，如AES/ECB/PKCS7Padding
-    private String pattern = "CBC";  //模式，加密模式，可选值 ECB/CBC，默认值ECB
+    private String pattern = "CBC";  //模式，加密模式，可选值 ECB/CBC，默认值CBC
     private Integer padding = 7;  //补码，即偏移量，可选值 5/7/10，默认值7
     private String iv = "XCLasfoLGH34893047^*%$$las401354kjslg20230803";  //向量，增加加密算法的强度，该值就是一个普通字符串
     private String dataType = "string";  //bytes string file

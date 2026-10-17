@@ -24,6 +24,7 @@ import java.util.Arrays;
  * 2023-04-18
  * 2025-01-16 代码整理
  * 传参加解密
+ * 安全提示：默认ECB模式为兼容既有数据保留，新系统建议使用 Aes2Util.encryptGcm（AES/GCM随机IV）
  **/
 public final class Aes3Util {
 

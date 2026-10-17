@@ -70,7 +70,7 @@ public final class SubmergeUtil {
         }
         boolean isAscii = AsciiUtil.isPrintableAll(key);  // 是否为可打印类型的ascii码
         if(!isAscii){
-            LogUtil.error("SubmergeUtil_encrypt_2", "秘钥必须为可打印ascii码对应字符串", key);
+            LogUtil.error("SubmergeUtil_encrypt_2", "秘钥必须为可打印ascii码对应字符串");
             return "";
         }
         final int keyLen = key.length();
@@ -156,7 +156,7 @@ public final class SubmergeUtil {
         }
         boolean isAscii = AsciiUtil.isPrintableAll(key);  // 是否为可打印类型的ascii码
         if(!isAscii){
-            LogUtil.error("SubmergeUtil_decrypt_4", "秘钥必须为可打印ascii码对应字符串", key);
+            LogUtil.error("SubmergeUtil_decrypt_4", "秘钥必须为可打印ascii码对应字符串");
             return "";
         }
         //
@@ -168,21 +168,21 @@ public final class SubmergeUtil {
         //
         String prefix = cipher.substring(0, 256);
         if(RegexUtil.inUpper(prefix)){
-            LogUtil.error("SubmergeUtil_decrypt_6", "密文格式错误", key);
+            LogUtil.error("SubmergeUtil_decrypt_6", "密文格式错误");
             return "";
         }
         String realKey = key;
         final String shaKey = cipher.substring(0, 128);
         final String curShaKey = ShaUtil.encrypt512(realKey);
         if(!StringUtil.equals(shaKey, curShaKey)){
-            LogUtil.error("SubmergeUtil_decrypt_7", "密钥错误", key);
+            LogUtil.error("SubmergeUtil_decrypt_7", "密钥错误");
             return "";
         }
         String realCipher = cipher.substring(256, cipher.length());
         final String shaCipher = cipher.substring(128, 256);
         final String curShaCipher = ShaUtil.encrypt512(realCipher);
         if(!StringUtil.equals(shaCipher, curShaCipher)){
-            LogUtil.error("SubmergeUtil_decrypt_8", "密文错误", key);
+            LogUtil.error("SubmergeUtil_decrypt_8", "密文错误");
             return "";
         }
         //

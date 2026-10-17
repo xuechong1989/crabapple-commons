@@ -403,11 +403,11 @@ public final class SkaUtil {
             }else if(StringUtil.equals(encryptType, ENCRYPT_PUBLIC)){
                 value = p_descPubMap.get(key);
             }else{
-                LogUtil.error("SkaUtil_decrypt_3", "加解密类型错误",  encryptType, key, chr, i, cipher);
+                LogUtil.error("SkaUtil_decrypt_3", "加解密类型错误",  encryptType, chr, i, cipher);
                 return "";
             }
             if(value == null){
-                LogUtil.error("SkaUtil_decrypt_4", "解密值为空",  encryptType, key, chr, i, cipher);
+                LogUtil.error("SkaUtil_decrypt_4", "解密值为空",  encryptType, chr, i, cipher);
                 return "";
             }
             final String sss = AsciiUtil.asciiCode2sss(value);

@@ -353,7 +353,7 @@ public final class AesUtil {
             byte[] bytes3 = Base64Util.encodeBytes2bytes(bytes2);
             return bytes3;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_encrypt_bytes2bytes_1", throwable, key, level, pkcs);
+            LogUtil.error("AesUtil_p_encrypt_bytes2bytes_1", throwable, level, pkcs);
             return null;
         }
     }
@@ -420,7 +420,7 @@ public final class AesUtil {
             String result = StringUtil.bytes2str(bytes2);
             return result;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_decrypt_bytes2str_1", throwable, key, level, pkcs);
+            LogUtil.error("AesUtil_p_decrypt_bytes2str_1", throwable, level, pkcs);
             return null;
         }
     }
@@ -471,7 +471,7 @@ public final class AesUtil {
             String result = p_decrypt_bytes2str(key, bytes, level, pkcs);
             return result;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_decrypt_str2str_1", throwable, key, value, level, pkcs);
+            LogUtil.error("AesUtil_p_decrypt_str2str_1", throwable, value, level, pkcs);
             return null;
         }
     }
@@ -512,7 +512,7 @@ public final class AesUtil {
             }
             return null;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_decrypt_str2str2_1", throwable, key, value, pkcs, iv);
+            LogUtil.error("AesUtil_p_decrypt_str2str2_1", throwable, value, pkcs);
             return null;
         }
     }
@@ -528,7 +528,7 @@ public final class AesUtil {
     private static final String p_encrypt_file2file(final String key, final String fromUrl, final String toUrl, final int level){
         BouncyCastleUtil.addProvider();
         if(StringUtil.isBlankOfOne(key, fromUrl)){
-            LogUtil.error("AesUtil_p_encrypt_file2file_1", "AES加密文件时参数错误", key, fromUrl, toUrl);
+            LogUtil.error("AesUtil_p_encrypt_file2file_1", "AES加密文件时参数错误", fromUrl, toUrl);
             return "";
         }
         if(level != 128 && level != 192 && level != 256){
@@ -562,7 +562,7 @@ public final class AesUtil {
             status = "success";
             return status;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_encrypt_file2file_t1", throwable, key, localFromUrl, localToUrl, level);
+            LogUtil.error("AesUtil_p_encrypt_file2file_t1", throwable, localFromUrl, localToUrl, level);
             return null;
         }finally {
             IOUtil.close(outputStream, cipherInputStream, inputStream);
@@ -585,7 +585,7 @@ public final class AesUtil {
     private static final String p_decrypt_file2file(final String key, final String fromUrl, final String toUrl, final int level){
         BouncyCastleUtil.addProvider();
         if(StringUtil.isBlankOfOne(key, fromUrl)){
-            LogUtil.error("AesUtil_p_decrypt_file2file_1", "AES解密文件时参数错误", key, fromUrl, toUrl);
+            LogUtil.error("AesUtil_p_decrypt_file2file_1", "AES解密文件时参数错误", fromUrl, toUrl);
             return "";
         }
         if(level != 128 && level != 192 && level != 256){
@@ -619,7 +619,7 @@ public final class AesUtil {
             status = "success";
             return status;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_p_decrypt_file2file_t1", throwable, "AES解密文件失败", key, localFromUrl, localToUrl, level);
+            LogUtil.error("AesUtil_p_decrypt_file2file_t1", throwable, "AES解密文件失败", localFromUrl, localToUrl, level);
             return null;
         }finally {
             IOUtil.close(outputStream, cipherInputStream, inputStream);

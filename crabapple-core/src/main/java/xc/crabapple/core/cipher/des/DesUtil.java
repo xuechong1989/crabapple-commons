@@ -16,6 +16,8 @@ import xc.crabapple.core.log.LogUtil;
  * DES加密算法，对称算法，双向，可逆
  * ECB-电码本模式，CBC-加密块链模式，OFB-输出反馈模式，CFB-加密反馈模式
  * 本例采用Base64形式处理
+ * 安全提示：DES密钥仅56位，已不足以保护敏感数据，仅建议用于对接遗留系统；
+ * 新系统请使用AES（xc.crabapple.core.cipher.aes.Aes2Util.encryptGcm 或 AesUtil）
  * */
 public final class DesUtil {
 
@@ -83,7 +85,7 @@ public final class DesUtil {
      */
     public static final String decrypt(final String key, final String value, final String transformation) throws Throwable {
         if(value == null || "".equals(value)){
-            LogUtil.warn("DESUtil_decrypt_1", "value为空", key);
+            LogUtil.warn("DESUtil_decrypt_1", "value为空");
             return null;
         }
         byte[] content = value.getBytes("UTF-8");
@@ -107,11 +109,11 @@ public final class DesUtil {
      */
     public static final String encrypt2(final String key, final String value) {
         if (key == null || "".equals(key)) {
-            LogUtil.warn("xc_crabapple_DESUtil_encrypt2_1", "key为空", key);
+            LogUtil.warn("xc_crabapple_DESUtil_encrypt2_1", "key为空");
             return null;
         }
         if(key.length() != 8){
-            LogUtil.warn("xc_crabapple_DESUtil_encrypt2_2", "key长度必须为8位", key);
+            LogUtil.warn("xc_crabapple_DESUtil_encrypt2_2", "key长度必须为8位");
             return null;
         }
         try{
@@ -122,13 +124,13 @@ public final class DesUtil {
             byte[] valueBytes = value.getBytes("UTF-8");
             byte[] valueBytesCipher = cipher.doFinal(valueBytes);
             if (valueBytesCipher == null) {
-                LogUtil.warn("xc_crabapple_DESUtil_encrypt2_3", "valueBytesCipher为空", key);
+                LogUtil.warn("xc_crabapple_DESUtil_encrypt2_3", "valueBytesCipher为空");
                 return null;
             }
             String result = Base64Util.encodeBytes2str(valueBytesCipher);
             return result;
         }catch(Throwable throwable){
-            LogUtil.error("DESUtil_encrypt2_t4", throwable, key);
+            LogUtil.error("DESUtil_encrypt2_t4", throwable);
             return null;
         }
     }
@@ -141,11 +143,11 @@ public final class DesUtil {
      */
     public static final String decrypt2(final String key, final String value) {
         if (key == null || "".equals(key)) {
-            LogUtil.warn("xc_crabapple_DESUtil_decrypt2_1",  "key为空", "key="+key);
+            LogUtil.warn("xc_crabapple_DESUtil_decrypt2_1",  "key为空");
             return null;
         }
         if(key.length() != 8){
-            LogUtil.warn("xc_crabapple_DESUtil_decrypt2_2", "key长度必须为8位", "key="+key);
+            LogUtil.warn("xc_crabapple_DESUtil_decrypt2_2", "key长度必须为8位");
             return null;
         }
         try{
@@ -157,13 +159,13 @@ public final class DesUtil {
             cipher.init(2, deskey);
             byte[] bytes = cipher.doFinal(valueBytes);
             if(bytes == null){
-                LogUtil.warn("xc_crabapple_DESUtil_decrypt2_3",  "bytes为空", "key="+key);
+                LogUtil.warn("xc_crabapple_DESUtil_decrypt2_3",  "bytes为空");
                 return null;
             }
             String result = StringUtil.bytes2str(bytes);
             return result;
         }catch(Throwable throwable){
-            LogUtil.error("DESUtil_decrypt2_t4", throwable, key);
+            LogUtil.error("DESUtil_decrypt2_t4", throwable);
             return null;
         }
     }
