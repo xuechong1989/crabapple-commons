@@ -110,7 +110,7 @@ public final class MinioUtil {
             //
             return true;
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_connect_t1", throwable, "minio服务器连接失败", p_endpoint, p_accessKey, p_secretKey, p_bucketName);
+            LogUtil.error("MiniofsUtil_connect_t1", throwable, "minio服务器连接失败", p_endpoint, p_bucketName);
             return false;
         }
     }
@@ -191,14 +191,14 @@ public final class MinioUtil {
             String localSourceUrl = UrlUtil.getStandardPath(sourceUrl);
             final boolean isReal = FileUtil.isRealFile(localSourceUrl, false);
             if(!isReal){
-                LogUtil.warn("MiniofsUtil_upload_1", "文件不存在", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_upload_1", "文件不存在", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_not_found");
                 return map;
             }
             long size = FileUtil.getFileSize(localSourceUrl);
             if(size <= 0){
-                LogUtil.warn("MiniofsUtil_upload_2", "文件大小为0", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_upload_2", "文件大小为0", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_size_is_zero");
                 return map;
@@ -206,7 +206,7 @@ public final class MinioUtil {
             // 文件内容的MD5
             final String md5 = MD5Util.getFileHash(localSourceUrl);
             if(StringUtil.isBlank(md5)){
-                LogUtil.warn("MiniofsUtil_upload_3", "文件的md5为空", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_upload_3", "文件的md5为空", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_md5_is_null");
                 return map;
@@ -215,7 +215,7 @@ public final class MinioUtil {
             // 客户端声明MD5比对：与上面刚算出的"服务端收到字节MD5"不一致，说明浏览器到服务端这段传输已损坏，
             // 这份字节不能作为入云盘与上层写CMIS_HASH_的依据，直接拒收（不写、不重写，重写也是同一份坏字节）
             if(!StringUtil.isBlank(clientMd5) && !StringUtil.equals(clientMd5, md5)){
-                LogUtil.error("MiniofsUtil_upload_7", "客户端声明MD5与服务端收到字节MD5不一致，拒收本次上传", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl, clientMd5, md5);
+                LogUtil.error("MiniofsUtil_upload_7", "客户端声明MD5与服务端收到字节MD5不一致，拒收本次上传", p_endpoint, id, localSourceUrl, clientMd5, md5);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_client_md5_mismatch");
                 return map;
@@ -232,7 +232,7 @@ public final class MinioUtil {
                         metadataMap.put("extra_upload", "fast");  // 秒传
                         return metadataMap;
                     }
-                    LogUtil.error("MiniofsUtil_upload_6", "秒传命中但回读校验未通过，转真传覆盖", p_endpoint, p_accessKey, p_secretKey, localSourceUrl, md5);
+                    LogUtil.error("MiniofsUtil_upload_6", "秒传命中但回读校验未通过，转真传覆盖", p_endpoint, localSourceUrl, md5);
                 }
             }
             // 开始真正上传文件
@@ -277,7 +277,7 @@ public final class MinioUtil {
                 metadataMap.put("extra_upload", "success");
                 return metadataMap;
             }
-            LogUtil.error("MiniofsUtil_upload_5", "写入后回读校验未通过，覆盖重写一次", p_endpoint, p_accessKey, p_secretKey, sourceUrl, md5, memVerifyMd5);
+            LogUtil.error("MiniofsUtil_upload_5", "写入后回读校验未通过，覆盖重写一次", p_endpoint, sourceUrl, md5, memVerifyMd5);
             Integer memDepth = s_rewriteDepth.get();
             boolean memInRewrite = memDepth != null && memDepth.intValue() >= 1;
             if (memInRewrite) {
@@ -297,7 +297,7 @@ public final class MinioUtil {
                 s_rewriteDepth.remove();
             }
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_upload_t120", throwable, p_endpoint, p_accessKey, p_secretKey, id, sourceUrl);
+            LogUtil.error("MiniofsUtil_upload_t120", throwable, p_endpoint, id, sourceUrl);
             return null;
         }finally {
             IOUtil.close(inputStream);
@@ -347,14 +347,14 @@ public final class MinioUtil {
             String localSourceUrl = UrlUtil.getStandardPath(sourceUrl);
             final boolean isReal = FileUtil.isRealFile(localSourceUrl, false);
             if(!isReal){
-                LogUtil.warn("MiniofsUtil_uploadStream_1", "文件不存在", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_uploadStream_1", "文件不存在", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_not_found");
                 return map;
             }
             long size = FileUtil.getFileSize(localSourceUrl);
             if(size <= 0){
-                LogUtil.warn("MiniofsUtil_uploadStream_2", "文件大小为0", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_uploadStream_2", "文件大小为0", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_size_is_zero");
                 return map;
@@ -363,7 +363,7 @@ public final class MinioUtil {
             // 文件内容的MD5
             final String md5 = MD5Util.getFileHash(localSourceUrl);
             if(StringUtil.isBlank(md5)){
-                LogUtil.warn("MiniofsUtil_uploadStream_3", "文件的md5为空", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.warn("MiniofsUtil_uploadStream_3", "文件的md5为空", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_file_md5_is_null");
                 return map;
@@ -372,7 +372,7 @@ public final class MinioUtil {
             // 客户端声明MD5比对：与上面刚算出的"服务端收到字节MD5"不一致，说明浏览器到服务端这段传输已损坏，
             // 这份字节不能作为入云盘与上层写CMIS_HASH_的依据，直接拒收（不写、不重写，重写也是同一份坏字节）
             if(!StringUtil.isBlank(clientMd5) && !StringUtil.equals(clientMd5, md5)){
-                LogUtil.error("MiniofsUtil_uploadStream_7", "客户端声明MD5与服务端收到字节MD5不一致，拒收本次上传", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl, clientMd5, md5);
+                LogUtil.error("MiniofsUtil_uploadStream_7", "客户端声明MD5与服务端收到字节MD5不一致，拒收本次上传", p_endpoint, id, localSourceUrl, clientMd5, md5);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_client_md5_mismatch");
                 return map;
@@ -390,7 +390,7 @@ public final class MinioUtil {
                         metadataMap.put("extra_upload", "fast");  // 秒传
                         return metadataMap;
                     }
-                    LogUtil.error("MiniofsUtil_uploadStream_6", "秒传命中但回读校验未通过，转真传覆盖", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl, md5);
+                    LogUtil.error("MiniofsUtil_uploadStream_6", "秒传命中但回读校验未通过，转真传覆盖", p_endpoint, id, localSourceUrl, md5);
                 }
             }
             // 2026-08-12 所有文件全部最终存储在云盘
@@ -421,7 +421,7 @@ public final class MinioUtil {
             final InputStream cipherInputStream = Sm4Util.encryptReturnInputStream(P_SM4_KEY, P_SM4_IV, fileInputStream, P_SM4_MODE, P_SM4_PADDING);
             if(cipherInputStream == null){
                 IOUtil.close(fileInputStream);
-                LogUtil.error("MiniofsUtil_uploadStream_4", "流式加密失败", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl);
+                LogUtil.error("MiniofsUtil_uploadStream_4", "流式加密失败", p_endpoint, id, localSourceUrl);
                 Map<String, String> map = new HashMap<>(2);
                 map.put("extra_upload", "error_encrypt_fail");
                 return map;
@@ -445,7 +445,7 @@ public final class MinioUtil {
                 metadataMap.put("extra_upload", "success");
                 return metadataMap;
             }
-            LogUtil.error("MiniofsUtil_uploadStream_5", "写入后回读校验未通过，覆盖重写一次", p_endpoint, p_accessKey, p_secretKey, id, localSourceUrl, md5, verifyMd5);
+            LogUtil.error("MiniofsUtil_uploadStream_5", "写入后回读校验未通过，覆盖重写一次", p_endpoint, id, localSourceUrl, md5, verifyMd5);
             Integer rewriteDepth = s_rewriteDepth.get();
             boolean inRewrite = rewriteDepth != null && rewriteDepth.intValue() >= 1;
             if (inRewrite) {
@@ -465,7 +465,7 @@ public final class MinioUtil {
                 s_rewriteDepth.remove();
             }
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_uploadStream_t1", throwable, p_endpoint, p_accessKey, p_secretKey, id, sourceUrl);
+            LogUtil.error("MiniofsUtil_uploadStream_t1", throwable, p_endpoint, id, sourceUrl);
             return null;
         }finally {
             IOUtil.close(inputStream);
@@ -491,7 +491,7 @@ public final class MinioUtil {
      */
     public static final Map<String, String> getMetadataMap(final String md5){
         if(StringUtil.isBlank(md5)){
-            LogUtil.error("MiniofsUtil_getMetadataMap_1", "md5为空", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_getMetadataMap_1", "md5为空", p_endpoint, md5);
             return null;
         }
         try {
@@ -526,7 +526,7 @@ public final class MinioUtil {
             Map<String, String> metadata2Map = MapUtil.copy(metadataMap);
             return metadata2Map;
         }catch (Throwable throwable){
-            LogUtil.error("MiniofsUtil_getMetadataMap_t1", throwable, "获取指定对象的元数据异常", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_getMetadataMap_t1", throwable, "获取指定对象的元数据异常", p_endpoint, md5);
             return null;
         }
     }
@@ -541,7 +541,7 @@ public final class MinioUtil {
     private static final String p_verifyObjectMd5(final String md5) {
         Map<String, Object> resultMap = p_download2inputstream(md5);
         if (resultMap == null) {
-            LogUtil.error("MiniofsUtil_p_verifyObjectMd5_1", "回读校验取流失败", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_p_verifyObjectMd5_1", "回读校验取流失败", p_endpoint, md5);
             return null;
         }
         InputStream decryptedInputStream = MapUtil.get(resultMap, "inputStream");
@@ -566,7 +566,7 @@ public final class MinioUtil {
             }
             return hexBuilder.toString();
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_p_verifyObjectMd5_t1", throwable, "回读校验读流异常", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_p_verifyObjectMd5_t1", throwable, "回读校验读流异常", p_endpoint, md5);
             return null;
         } finally {
             IOUtil.close(decryptedInputStream);
@@ -596,7 +596,7 @@ public final class MinioUtil {
     public static final Map<String, String> download2disk(final String md5, final String targetUrl) {
         Map<String, Object> resultMap = p_download2inputstream(md5);
         if(resultMap == null){
-            LogUtil.error("MiniofsUtil_download2disk_1", "文件下载失败", p_endpoint, p_accessKey, p_secretKey, md5, targetUrl);
+            LogUtil.error("MiniofsUtil_download2disk_1", "文件下载失败", p_endpoint, md5, targetUrl);
             return null;
         }
         InputStream inputStream = MapUtil.get(resultMap, "inputStream");
@@ -604,13 +604,13 @@ public final class MinioUtil {
             IOUtil.inputstream2disk(inputStream, targetUrl);
             final String targetMd5 = MD5Util.getFileHash(targetUrl);
             if(!StringUtil.equals(md5, targetMd5)){
-                LogUtil.error("MiniofsUtil_download2disk_4", "MD5值不一致，文件下载失败", p_endpoint, p_accessKey, p_secretKey, md5, targetMd5, targetUrl);
+                LogUtil.error("MiniofsUtil_download2disk_4", "MD5值不一致，文件下载失败", p_endpoint, md5, targetMd5, targetUrl);
                 return null;
             }
             Map<String, String> metadataMap = MapUtil.get(resultMap, "metadataMap");
             return metadataMap;
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_download2disk_t1", throwable, "文件下载异常", p_endpoint, p_accessKey, p_secretKey, md5, targetUrl);
+            LogUtil.error("MiniofsUtil_download2disk_t1", throwable, "文件下载异常", p_endpoint, md5, targetUrl);
             return null;
         } finally {
             IOUtil.close(inputStream);
@@ -627,7 +627,7 @@ public final class MinioUtil {
     public static final Map<String, String> download2browser(final String md5, final String fileName) {
         Map<String, Object> resultMap = p_download2inputstream(md5);
         if(resultMap == null){
-            LogUtil.error("MiniofsUtil_download2browser_1", "文件下载失败", p_endpoint, p_accessKey, p_secretKey, md5, fileName);
+            LogUtil.error("MiniofsUtil_download2browser_1", "文件下载失败", p_endpoint, md5, fileName);
             return null;
         }
         InputStream inputStream = MapUtil.get(resultMap, "inputStream");
@@ -645,7 +645,7 @@ public final class MinioUtil {
             Map<String, String> metadataMap = MapUtil.get(resultMap, "metadataMap");
             return metadataMap;
         } catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_download2browser_t2", throwable, "文件下载失败", p_endpoint, p_accessKey, p_secretKey, md5, fileName);
+            LogUtil.error("MiniofsUtil_download2browser_t2", throwable, "文件下载失败", p_endpoint, md5, fileName);
             return null;
         } finally {
             IOUtil.close(servletOutputStream, inputStream);
@@ -661,7 +661,7 @@ public final class MinioUtil {
     private static final Map<String, Object> p_download2inputstream(final String md5) {
         Map<String, String> metadataMap = getMetadataMap(md5);
         if(metadataMap == null){
-            LogUtil.error("MiniofsUtil_p_download2inputstream_1", "文件不存在", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_p_download2inputstream_1", "文件不存在", p_endpoint, md5);
             return null;
         }
         InputStream minioInputStream = null;
@@ -678,7 +678,7 @@ public final class MinioUtil {
             InputStream decryptedInputStream = Sm4Util.decryptReturnInputStream(P_SM4_KEY, P_SM4_IV, minioInputStream, P_SM4_MODE, P_SM4_PADDING);
             if(decryptedInputStream == null){
                 IOUtil.close(minioInputStream);
-                LogUtil.error("MiniofsUtil_p_download2inputstream_2", "流式解密失败", p_endpoint, p_accessKey, p_secretKey, md5);
+                LogUtil.error("MiniofsUtil_p_download2inputstream_2", "流式解密失败", p_endpoint, md5);
                 return null;
             }
             Map<String, Object> resultMap = new HashMap<>(2);
@@ -686,7 +686,7 @@ public final class MinioUtil {
             resultMap.put("inputStream", decryptedInputStream);
             return resultMap;
         }catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_p_download2inputstream_t1", throwable, "文件下载失败", p_endpoint, p_accessKey, p_secretKey, md5);
+            LogUtil.error("MiniofsUtil_p_download2inputstream_t1", throwable, "文件下载失败", p_endpoint, md5);
             return null;
         }
     }
@@ -720,7 +720,7 @@ public final class MinioUtil {
             }
             return objectNameList;
         }catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_listAllObjectNames_t1", throwable, "列出云盘对象失败", p_endpoint, p_accessKey, p_secretKey);
+            LogUtil.error("MiniofsUtil_listAllObjectNames_t1", throwable, "列出云盘对象失败", p_endpoint);
             return null;
         }
     }
@@ -747,7 +747,7 @@ public final class MinioUtil {
             }
             return true;
         }catch (Throwable throwable) {
-            LogUtil.error("MiniofsUtil_p_download2inputstream_t1", throwable, "添加缓存异常", p_endpoint, p_accessKey, p_secretKey);
+            LogUtil.error("MiniofsUtil_p_download2inputstream_t1", throwable, "添加缓存异常", p_endpoint);
             return false;
         }
     }

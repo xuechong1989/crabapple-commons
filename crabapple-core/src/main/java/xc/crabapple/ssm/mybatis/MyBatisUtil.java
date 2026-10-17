@@ -962,7 +962,7 @@ public final class MyBatisUtil {
             connection = DriverManager.getConnection(jdbcurl, username, password);
             return true;
         } catch (Throwable throwable) {
-            LogUtil.error("DataSourceUtil_initMysql_t1", throwable, "数据库连接失败", driverClassName, jdbcurl, username, password);
+            LogUtil.error("DataSourceUtil_initMysql_t1", throwable, "数据库连接失败", driverClassName, jdbcurl);
             return false;
         } finally {
             IOUtil.close(connection);

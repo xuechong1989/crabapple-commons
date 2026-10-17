@@ -81,7 +81,7 @@ public final class PropertiesUtil {
         }
         final boolean exists = FileUtil.exists(routerUrl);
         if(!exists) {
-            LogUtil.println("PropertiesUtil_loadPropertiesByRouter_1", "路由conf文件不存在，请尽快配置", routerUrl, currentRootPath, sm4key);
+            LogUtil.println("PropertiesUtil_loadPropertiesByRouter_1", "路由conf文件不存在，请尽快配置", routerUrl, currentRootPath);
             return "error@rounter_conf_file_no_found";
         }
         //
@@ -422,7 +422,7 @@ public final class PropertiesUtil {
                         properties.load(inputStreamReader);
                         loadPropertiesObject(properties);
                     }catch(Throwable throwable){
-                        LogUtil.error("PropertiesUtil_hotUpdaatePropertiesFile_e1", "properties文件热更新失败", propertiesUrl, interval, sm4key);
+                        LogUtil.error("PropertiesUtil_hotUpdaatePropertiesFile_e1", "properties文件热更新失败", propertiesUrl, interval);
                     }
                 }
             }

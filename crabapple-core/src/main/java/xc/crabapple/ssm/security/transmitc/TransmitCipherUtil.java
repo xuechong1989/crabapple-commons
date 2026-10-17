@@ -49,6 +49,11 @@ public final class TransmitCipherUtil {
             return;
         }
         p_enable = tcEnbale;
+        if(StringUtil.isBlankOfOne(tcC2sSubmergeKey, tcC2sSm2publicKey, tcC2sSm2privateKey, tcS2cSubmergeKey, tcS2cSm2publicKey, tcS2cSm2privateKey)){
+            p_enable = "no";
+            LogUtil.error("TransmitCipherUtil_init_1", "传参加密已启用但密钥未配置，已自动停用");
+            return;
+        }
         //
         // c2s，客户端提供，客户端同步存储
         p_c2s_submergeKey = tcC2sSubmergeKey;
@@ -78,17 +83,6 @@ public final class TransmitCipherUtil {
                 p_s2c_api_whitelistMap.put(api, 1);
             }
         }
-        // 确保日志信息安全
-        String tmp_c2s_sm2_publicKey = SubmergeUtil.encrypt(p_c2s_submergeKey, p_c2s_sm2_publicKey);
-        String tmp_c2s_sm2_privateKey = SubmergeUtil.encrypt(p_c2s_submergeKey, p_c2s_sm2_privateKey);
-        String tmp_s2c_sm2_publicKey = SubmergeUtil.encrypt(p_s2c_submergeKey, p_s2c_sm2_publicKey);
-        String tmp_s2c_sm2_privateKey = SubmergeUtil.encrypt(p_s2c_submergeKey, p_s2c_sm2_privateKey);
-        LogUtil.print("SecurityUtil_init_1", p_c2s_submergeKey);
-        LogUtil.print("SecurityUtil_init_2", tmp_c2s_sm2_publicKey);
-        LogUtil.print("SecurityUtil_init_3", tmp_c2s_sm2_privateKey);
-        LogUtil.print("SecurityUtil_init_4", p_s2c_submergeKey);
-        LogUtil.print("SecurityUtil_init_5", tmp_s2c_sm2_publicKey);
-        LogUtil.print("SecurityUtil_init_6", tmp_s2c_sm2_privateKey);
     }
 
     /**

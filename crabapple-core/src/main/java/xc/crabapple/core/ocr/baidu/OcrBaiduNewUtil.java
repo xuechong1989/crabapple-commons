@@ -240,7 +240,6 @@ public final class OcrBaiduNewUtil {
             String result = resultBuilder.toString();
             JsonNode jsonNode = JacksonUtil.json2jsonNode(result);
             accessToken = JacksonUtil.getString(jsonNode, "access_token");
-            LogUtil.print("OcrBaiduNewUtil_getAccessToken_1", "accessToken=" + accessToken);
             return accessToken;
         }catch(Throwable throwable){
             LogUtil.error("OcrBaiduNewUtil_getAccessToken_t1", throwable, fullUrl);

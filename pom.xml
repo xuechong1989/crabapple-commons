@@ -21,6 +21,21 @@
         </license>
     </licenses>
 
+    <developers>
+        <developer>
+            <id>xuechong1989</id>
+            <name>xuechong1989</name>
+            <url>https://github.com/xuechong1989</url>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/xuechong1989/crabapple.git</connection>
+        <developerConnection>scm:git:https://github.com/xuechong1989/crabapple.git</developerConnection>
+        <url>https://github.com/xuechong1989/crabapple</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <modules>
         <module>crabapple-core</module>
     </modules>

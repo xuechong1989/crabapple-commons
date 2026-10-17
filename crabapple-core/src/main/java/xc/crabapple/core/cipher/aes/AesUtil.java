@@ -648,7 +648,7 @@ public final class AesUtil {
             String result = Base64Util.encodeBytes2str(bs);
             return result;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_getSecretKey_1", throwable, mykey);
+            LogUtil.error("AesUtil_getSecretKey_1", throwable);
             return null;
         }
     }
@@ -671,7 +671,7 @@ public final class AesUtil {
             key = new SecretKeySpec(enCodeFormat, "AES");  //转换为AES专用密钥
             return key;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_getSecretKey2_1", throwable, mykey, keyLength);
+            LogUtil.error("AesUtil_getSecretKey2_1", throwable, keyLength);
             return key;
         }
     }
@@ -692,7 +692,7 @@ public final class AesUtil {
             secureRandom.setSeed(bytes);
             return secureRandom;
         }catch(Throwable throwable){
-            LogUtil.error("AesUtil_getSecureRandom_1", throwable, mykey);
+            LogUtil.error("AesUtil_getSecureRandom_1", throwable);
             return null;
         }
     }

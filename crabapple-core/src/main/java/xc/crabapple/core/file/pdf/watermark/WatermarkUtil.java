@@ -1025,16 +1025,6 @@ public final class WatermarkUtil {
         if (rotation == 45) {
             //系统名称 用户名 手机号
             if (!StringUtil.isBlank(projectName) && !StringUtil.isBlank(userName) && !StringUtil.isBlank(mobile)) {
-//                for (float height = (int) (0 ); height < pageHeight +heightInterval; height = (int) (height + heightInterval)) {
-//                    for (float width = (int) (0 ); width < pageWidth + projectNameWatermarkWeight + userNameWatermarkWeight + mobileWatermarkWeight; width =width +projectNameWatermarkWeight+userNameWatermarkWeight+mobileWatermarkWeight + 3*wordInterval) {
-//                        pdfContent.showTextAligned(Element.ALIGN_LEFT, projectName, width, height, rotation);
-//                        System.out.println("width1 = " + width+"  height1 = " + height);
-//                        pdfContent.showTextAligned(Element.ALIGN_LEFT, userName, width + projectNameWatermarkWeight + wordInterval, height + projectNameWaterMarkHeight + wordInterval , rotation);
-//                        System.out.println("width2 = " + (width + projectNameWatermarkWeight + wordInterval)+"  height2 = " + (height + projectNameWaterMarkHeight + wordInterval));
-//                        pdfContent.showTextAligned(Element.ALIGN_LEFT, mobile, width + projectNameWatermarkWeight+userNameWatermarkWeight + 2*wordInterval, height+ projectNameWaterMarkHeight+userNameWaterMarkHeight +2*wordInterval , rotation);
-//                        System.out.println("width3 = " + (width + projectNameWatermarkWeight+userNameWatermarkWeight + 2*wordInterval)+"  height3 = " + (height+ projectNameWaterMarkHeight+userNameWaterMarkHeight +2*wordInterval));
-//                    }
-//                }
                 for (int width = (int) (0 - pageWidth - pageHeight); width < pageWidth + projectNameWatermarkWeight + userNameWatermarkWeight + mobileWatermarkWeight; width = (int) (width + heightInterval)) {
                     int height = 0;
                     for (int w = width; w < pageWidth + projectNameWatermarkWeight + userNameWatermarkWeight + mobileWatermarkWeight + 3 * wordInterval; w = (int) (w + mobileWatermarkWeight + wordInterval)) {

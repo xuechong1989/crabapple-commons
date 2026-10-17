@@ -48,7 +48,7 @@ public class KeytoolUtil {
             String content = sb.toString();
             FileUtil.fileWriteNew(keyUrl, content, true);
         } catch (Throwable throwable){
-            LogUtil.error("HttpsCA_jks2key_t1", throwable, "jks转key文件失败", alias, password, jksUrl);
+            LogUtil.error("HttpsCA_jks2key_t1", throwable, "jks转key文件失败", alias, jksUrl);
         }finally {
             IOUtil.close(fileInputStream);
         }

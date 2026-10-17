@@ -121,7 +121,7 @@ public class CsrfUtil {
         if(StringUtil.equals(csrfTokenPlaintext, p_csrfTokenPlaintext)){
             return "success";
         }
-        LogUtil.error("CsrfUtil_check_2", "csrfToken错误，可能存在CSRF攻击", p_firstApi, requestURI, p_csrfTokenParamName, paramCsrfToken, p_csrfTokenSubmergeKey, p_csrfTokenSm4Key, p_csrfTokenSm4Iv);
+        LogUtil.error("CsrfUtil_check_2", "csrfToken错误，可能存在CSRF攻击", p_firstApi, requestURI, p_csrfTokenParamName, paramCsrfToken);
         return "csrf_error_not_equals";
     }
 

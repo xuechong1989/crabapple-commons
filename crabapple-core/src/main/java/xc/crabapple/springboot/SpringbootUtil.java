@@ -50,7 +50,7 @@ public final class SpringbootUtil {
             SpringApplication springApplication = new SpringApplication(applicationClass);
             String result = PropertiesUtil.loadPropertiesByRouter(routerUrl, sm4key);
             if(!StringUtil.startsWith(result, "ok")){
-                LogUtil.error("SpringbootUtil_start_1", "配置文件加载失败，系统无法启动", routerUrl, sm4key);
+                LogUtil.error("SpringbootUtil_start_1", "配置文件加载失败，系统无法启动", routerUrl);
                 throw new RuntimeException("配置文件加载失败，系统无法启动");
             }
             Map<String, Object> map = new HashMap<>();
@@ -72,7 +72,7 @@ public final class SpringbootUtil {
             NetUtil.init();
             PaginationUtil.init(pageIndex, pageSize);
         } catch (Throwable throwable) {
-            LogUtil.error("SpringbootUtil_start_t1", throwable, routerUrl, sm4key);
+            LogUtil.error("SpringbootUtil_start_t1", throwable, routerUrl);
         }
     }
 

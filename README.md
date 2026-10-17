@@ -1,8 +1,8 @@
 # crabapple（海棠果）
 
-[![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple/actions/workflows/ci.yml) [![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white)](https://github.com/xuechong1989/crabapple#版本说明) [![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE) [![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple#版本说明)
+[![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple/actions/workflows/ci.yml) ![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white) [![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE) [![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple/releases)
 
-crabapple（中文名“海棠果”）是一套面向服务端开发的通用 Java 类库，自 2016 年起持续迭代（前身先后为 yczq4j、snow4j、snowj）。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库为其基础核心模块 `crabapple-core` 的开源版本。
+crabapple（中文名“海棠果”）是一套面向服务端开发的通用 Java 类库，自 2016 年起持续迭代打磨。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库为其基础核心模块 `crabapple-core` 的开源版本。
 
 `crabapple-core` 沉淀了服务端日常开发中高频使用的通用能力：
 
@@ -25,43 +25,20 @@ crabapple（中文名“海棠果”）是一套面向服务端开发的通用 J
 - 统一的规范与标准（统一的数据对象模型与标准接口数据格式）；
 - 性能优化及防止误写（如各类空值安全处理）。
 
-## 版本说明
-
-自 v11.0.0 起，大版本号与所基于的 JDK 版本保持一致，并按 JDK 版本维护不同版本线（`crabapple-08` / `crabapple-21`）。本仓库为 JDK 21 版本线（`crabapple-21`），当前版本 `21-4.2.00`。
-
-## 历史沿革
-
-| 时间 | 里程碑 |
-| --- | --- |
-| 2016-11 | 项目立项（原名 yczq4j） |
-| 2018-12 | 更名为 snow4j，开始拆分并各自独立发布 |
-| 2019-12 | 依赖由 JDK 8 升级至 JDK 11，开始集成 Spring Boot |
-| 2020-08 | 更名为 snowj |
-| 2021-06 | 统一更名为 crabapple（海棠果），整库项目拆分并各自维护 |
-| 2022-01 | v8.0.0：模块化，Maven 统一集中管理 |
-| 2022-05 | v11.0.0：大版本号与 JDK 版本保持一致 |
-| 2024-03 | 按 JDK 版本分别发布 crabapple-08 / crabapple-21 版本线 |
-
-## 模块说明
-
-crabapple 为多模块工程（spring / web / file-* / redis / ocr 等模块），本仓库开源的是其基础核心模块：
-
-| 模块 | 说明 |
-| --- | --- |
-| crabapple-core | 核心类库（本仓库唯一模块） |
-
 ## 环境要求
 
 - JDK 21
 - Maven 3.9+
 
-## 构建
+## 快速开始
+
+### 构建
 
 ```shell
 mvn clean install
 ```
 
-## 引入依赖
+### 引入依赖
 
 ```xml
 <dependency>
@@ -69,6 +46,17 @@ mvn clean install
     <artifactId>crabapple-core</artifactId>
     <version>21-4.2.00</version>
 </dependency>
+```
+
+### 快速上手
+
+工具类均为静态方法，引入依赖后直接调用：
+
+```java
+LogUtil.init("logback", "debug");
+LogUtil.print("demo_1", "hello crabapple");
+
+boolean blank = StringUtil.isBlank("");
 ```
 
 ## 可选依赖说明
@@ -95,7 +83,7 @@ mvn clean install
 
 ```
 crabapple-21-open
-├── crabapple-core        核心模块
+├── crabapple-core        核心类库（本仓库唯一模块）
 │   └── src/main/java/xc/crabapple
 │       ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）
 │       └── ssm           数据库/缓存/中间件等集成支持
@@ -115,7 +103,16 @@ crabapple-21-open
 - 加密工具类中 ECB 模式（`Aes2Util.encrypt/decrypt`、`Aes3Util`）仅为兼容历史数据保留，新系统建议使用 `Aes2Util.encryptGcm/decryptGcm`（AES/GCM 随机 IV + 完整性校验）。
 - DES 密钥仅 56 位，强度不足，仅建议用于对接遗留系统，新系统请使用 AES。
 - 工具类不会将密钥、密码输出到日志。
+- 部署侧的密钥材料（配置中的 SM2/SM4 密钥、混淆密钥等）请独立保管，不要随代码入库。
+
+## 参与贡献
+
+欢迎通过 Issue / Pull Request 参与贡献；提交前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 安全政策
+
+如发现安全问题，请勿公开提交 Issue，请按 [SECURITY.md](SECURITY.md) 所述方式私下报告。
 
 ## 许可证
 
-本项目基于 [Apache License 2.0](LICENSE) 开源。
+本项目基于 [Apache License 2.0](LICENSE) 开源；第三方组件的许可与署名信息见 [NOTICE](NOTICE)。

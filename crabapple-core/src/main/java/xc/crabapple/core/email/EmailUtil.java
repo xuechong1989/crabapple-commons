@@ -93,8 +93,8 @@ public final class EmailUtil{
     }
 
     public static final void sendDingtalk(final EmailBean emailBean){
-        String host = "smtp.yczqoffice.com";
-        Integer port = 25;
+        String host = emailBean.getHost();
+        Integer port = emailBean.getPort();
         String fromUrl = emailBean.getFromUrl();
         String fromName = emailBean.getFromName();
         String password = emailBean.getPassword();

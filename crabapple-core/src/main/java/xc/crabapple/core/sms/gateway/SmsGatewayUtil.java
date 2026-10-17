@@ -188,7 +188,7 @@ public class SmsGatewayUtil {
         String resultContent = result.text();
         String message = messageMap.get(resultContent);
         if (!"0".equals(resultContent)) {
-            LogUtil.error("SmsGatewayUtil_p_sendBatch_4", "短信平台，发送手机验证码失败", respCtn, p_enterpriseID, p_subPort, p_loginName, p_password, p_gatewayAddress, toBeSendContent, strMobiles);
+            LogUtil.error("SmsGatewayUtil_p_sendBatch_4", "短信平台，发送手机验证码失败", respCtn, p_enterpriseID, p_subPort, p_loginName, p_gatewayAddress, toBeSendContent, strMobiles);
             SmsData smsData = new SmsData(false, "006", message, resultContent);
             return smsData;
         }

@@ -58,15 +58,15 @@ public final class CompressUtil {
             }
             int exitCode = process.waitFor();
             if (exitCode == 0) {
-                LogUtil.print("CompressUtil_z7_1", "文件压缩成功", exitCode, fromUrlOrPathLocal, to7zUrlLocal, level, password);
+                LogUtil.print("CompressUtil_z7_1", "文件压缩成功", exitCode, fromUrlOrPathLocal, to7zUrlLocal, level);
                 return true;
             }
             FileUtil.fileDelete(to7zUrlLocal);
-            LogUtil.error("CompressUtil_z7_2", "文件压缩失败", exitCode, homeUrlLocal, fromUrlOrPathLocal, to7zUrlLocal, level, password);
+            LogUtil.error("CompressUtil_z7_2", "文件压缩失败", exitCode, homeUrlLocal, fromUrlOrPathLocal, to7zUrlLocal, level);
             return false;
         }catch (Throwable throwable){
             FileUtil.fileDelete(to7zUrl);
-            LogUtil.error("CompressUtil_z7_t1", throwable, "文件压缩异常", homeUrl, fromUrlOrPath, to7zUrl, level, password);
+            LogUtil.error("CompressUtil_z7_t1", throwable, "文件压缩异常", homeUrl, fromUrlOrPath, to7zUrl, level);
             return false;
         }finally {
             IOUtil.close(bufferedReader, inputStreamReader, inputStream);

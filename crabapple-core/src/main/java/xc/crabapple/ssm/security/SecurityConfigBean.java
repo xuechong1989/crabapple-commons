@@ -32,14 +32,14 @@ public class SecurityConfigBean extends BeanBase {
     private String crossdomainValue = "";
     private String uploaderWebshellEnable = "no";
     private String uploaderWebshellParamName = "targetScope";
-    private String tcEnbale = "yes";
-    private String tcC2sSubmergeKey = "REDACTED";
-    private String tcC2sSm2publicKey = "049117323b8749a9c205848c091406cdd2f435397ddc20af4db73bbd94d87db7d066fdb03b1fb0ad658951f0abcc765a1d5a3ff2aa5798d21e6e2ff42b28e090c1";
-    private String tcC2sSm2privateKey = "REDACTED";
+    private String tcEnbale = "no";  // 传参加密开关，默认关闭；启用时须在配置中提供下方密钥
+    private String tcC2sSubmergeKey = "";
+    private String tcC2sSm2publicKey = "";
+    private String tcC2sSm2privateKey = "";
     private String tcC2sApiWhitelist = "";
-    private String tcS2cSubmergeKey = "REDACTED";
-    private String tcS2cSm2publicKey = "04600a928e8ea65baf432efcfa665480396f15f043730432b3a13f65de22ce187b24cd952582ddbe84e971be645035919fe84b7de217d60c442bba34e1de984498";
-    private String tcS2cSm2privateKey = "REDACTED";
+    private String tcS2cSubmergeKey = "";
+    private String tcS2cSm2publicKey = "";
+    private String tcS2cSm2privateKey = "";
     private String tcS2cApiWhitelist = "";
 
     public SecurityConfigBean(){ }

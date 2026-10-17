@@ -120,7 +120,7 @@ public final class SmsTencent3Util {
             SmsData smsTencent3Data = new SmsData(true, code, "成功", content);
             return smsTencent3Data;
         }catch(Throwable throwable){
-            LogUtil.error("SmsTencent3Util_send_t1", throwable, smsSdkAppId, templateId, signName, secretId, secretKey, proxyEnable, proxyPort, proxyIp, protocol);
+            LogUtil.error("SmsTencent3Util_send_t1", throwable, smsSdkAppId, templateId, signName, proxyEnable, proxyPort, proxyIp, protocol);
             String message = throwable.getMessage();
             SmsData smsTencent3Data = new SmsData(false, "010", message, content);
             return smsTencent3Data;

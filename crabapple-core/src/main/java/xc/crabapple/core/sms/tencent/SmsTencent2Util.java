@@ -52,7 +52,7 @@ public final class SmsTencent2Util {
             SmsData smsTencent3Data = new SmsData(false, "001", smsSingleSenderResult.errMsg, content);
             return smsTencent3Data;
         }catch(Throwable throwable){
-            LogUtil.error("SmsTencentUtil_send_t1", throwable, host, port, scheme, appid, appkey, templateId, sign);
+            LogUtil.error("SmsTencentUtil_send_t1", throwable, host, port, scheme, appid, templateId, sign);
             String message = throwable.getMessage();
             SmsData smsTencent3Data = new SmsData(false, "010", message, content);
             return smsTencent3Data;

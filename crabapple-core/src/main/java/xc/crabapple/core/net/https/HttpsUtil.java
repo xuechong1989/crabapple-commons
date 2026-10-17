@@ -55,7 +55,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class HttpsUtil {
 
-    private static final String DEFAULT_KEYSTORE_PASSWORD = "123456";
+    private static final String DEFAULT_KEYSTORE_PASSWORD = "123456";  // 仅用于内存KeyStore初始化，非真实凭据
 
     /**
      * 2020-11-15 7.0.0
