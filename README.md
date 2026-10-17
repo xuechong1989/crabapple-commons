@@ -1,5 +1,7 @@
 # crabapple（海棠果）
 
+[![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple/actions/workflows/ci.yml) [![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white)](https://github.com/xuechong1989/crabapple#版本说明) [![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE) [![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple#版本说明)
+
 crabapple（中文名“海棠果”）是一套面向服务端开发的通用 Java 类库，自 2016 年起持续迭代（前身先后为 yczq4j、snow4j、snowj）。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库为其基础核心模块 `crabapple-core` 的开源版本。
 
 `crabapple-core` 沉淀了服务端日常开发中高频使用的通用能力：
