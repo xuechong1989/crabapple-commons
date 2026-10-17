@@ -24,14 +24,6 @@
     </properties>
 
 
-    <repositories>
-        <repository>
-            <id>com.e-iceblue</id>
-            <url>https://repo.e-iceblue.cn/repository/maven-public/</url>
-        </repository>
-    </repositories>
-
-
     <build>
         <finalName>crabapple-core</finalName>
 
@@ -196,11 +188,11 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Kaptcha官方2.3版仅发布在jcenter（已停服），改用Central上的同源代码发布版 -->
         <dependency>
-            <groupId>com.google.code.kaptcha</groupId>
+            <groupId>com.github.penggle</groupId>
             <artifactId>kaptcha</artifactId>
-            <version>2.3</version>
-            <classifier>jdk15</classifier>
+            <version>2.3.2</version>
         </dependency>
 
         <!-- Selenium的ExpectedCondition接口签名引用Guava Function，使用SeleniumUtil时需要 -->
@@ -398,13 +390,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.22.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>e-iceblue</groupId>
-            <artifactId>spire.pdf</artifactId>
-            <version>10.6.2</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -1159,6 +1144,54 @@
         </dependency>
 
     </dependencies>
+
+
+    <profiles>
+
+    <!--
+      默认启用：Spire.PDF 依赖及其仓库（e-iceblue 仓库在海外网络环境不可达，启用其它 profile 即自动停用本 profile）
+    -->
+    <profile>
+        <id>pdf-spire</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <repositories>
+            <repository>
+                <id>com.e-iceblue</id>
+                <url>https://repo.e-iceblue.cn/repository/maven-public/</url>
+            </repository>
+        </repositories>
+        <dependencies>
+            <dependency>
+                <groupId>e-iceblue</groupId>
+                <artifactId>spire.pdf</artifactId>
+                <version>10.6.2</version>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    </profile>
+
+    <!-- CI 环境使用：不拉取 e-iceblue 依赖，排除依赖 Spire.PDF 的源码（PDF/A 转换、HTML转PDFA功能不参与编译） -->
+    <profile>
+        <id>ci</id>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>**/PdfSpireUtil.java</exclude>
+                            <exclude>**/PdfaUtil.java</exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+
+    </profiles>
 
 
 </project>

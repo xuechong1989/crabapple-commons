@@ -80,4 +80,11 @@
         </plugins>
     </build>
 
+    <!-- 与 crabapple-core 中的 ci profile 对应，避免 -P ci 时提示 profile 不存在 -->
+    <profiles>
+        <profile>
+            <id>ci</id>
+        </profile>
+    </profiles>
+
 </project>
