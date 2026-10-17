@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE configuration>
+
+<configuration scan='true' scanPeriod='60 seconds' debug='false'>
+
+    <appender name='CONSOLE_DEBUG' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%boldWhite(%-5level #) %boldWhite([%date{yyyy-MM-dd HH:mm:ss.SSS}] #) %boldWhite(%thread #) %boldWhite(%logger) %boldWhite(%n%msg%n)</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name='CONSOLE_INFO' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%green(%-5level #) %boldGreen([%date{yyyy-MM-dd HH:mm:ss.SSS}] #) %boldGreen(%thread #) %boldGreen(%logger) %boldGreen(%n%msg%n)</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name='CONSOLE_WARN' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%yellow(%-5level #) %boldYellow([%date{yyyy-MM-dd HH:mm:ss.SSS}] #) %boldYellow(%thread #) %yellow(%logger) %yellow(%n%msg%n)</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    <appender name='CONSOLE_ERROR' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%red(%-5level #) %boldRed([%date{yyyy-MM-dd HH:mm:ss.SSS}] #) %boldRed(%thread #) %red(%logger) %red(%n%msg%n)</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name='FILE_DEBUG' class='ch.qos.logback.core.rolling.RollingFileAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger %n%msg%n%n</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class='ch.qos.logback.core.rolling.TimeBasedRollingPolicy'>
+            <fileNamePattern>/data/crabapple/logs/1-debug#%d{yyyy-MM-dd}#%i.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class='ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP'>
+                <maxFileSize>512MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <appender name='FILE_INFO' class='ch.qos.logback.core.rolling.RollingFileAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger %n%msg%n%n</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class='ch.qos.logback.core.rolling.TimeBasedRollingPolicy'>
+            <fileNamePattern>/data/crabapple/logs/2-info#%d{yyyy-MM-dd}#%i.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class='ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP'>
+                <maxFileSize>512MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <appender name='FILE_WARN' class='ch.qos.logback.core.rolling.RollingFileAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger %n%msg%n%n</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class='ch.qos.logback.core.rolling.TimeBasedRollingPolicy'>
+            <fileNamePattern>/data/crabapple/logs/3-warn#%d{yyyy-MM-dd}#%i.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class='ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP'>
+                <maxFileSize>512MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    <appender name='FILE_ERROR' class='ch.qos.logback.core.rolling.RollingFileAppender'>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%-5level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger %n%msg%n%n</pattern>
+        </encoder>
+        <filter class='ch.qos.logback.classic.filter.LevelFilter'>
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class='ch.qos.logback.core.rolling.TimeBasedRollingPolicy'>
+            <fileNamePattern>/data/crabapple/logs/4-error#%d{yyyy-MM-dd}#%i.log</fileNamePattern>
+            <maxHistory>90</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class='ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP'>
+                <maxFileSize>512MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root>
+        <appender-ref ref='CONSOLE_DEBUG'/>
+        <appender-ref ref='CONSOLE_INFO'/>
+        <appender-ref ref='CONSOLE_WARN'/>
+        <appender-ref ref='CONSOLE_ERROR'/>
+        <appender-ref ref='FILE_DEBUG'/>
+        <appender-ref ref='FILE_INFO'/>
+        <appender-ref ref='FILE_WARN'/>
+        <appender-ref ref='FILE_ERROR'/>
+    </root>
+
+    <logger name='com.example' level='DEBUG'/>
+    <logger name='xc.crabapple' level='DEBUG'/>
+    <logger name='com.alibaba' level='ERROR'/>
+    <logger name='com.gargoylesoftware' level='ERROR'/>
+    <logger name='org.hibernate' level='ERROR' />
+    <logger name='org.mybatis' level='ERROR'/>
+    <logger name='org.mongodb' level='ERROR'/>
+    <logger name='org.activiti' level='ERROR' />
+    <logger name='org.apache' level='ERROR'/>
+    <logger name='org.springframework' level='ERROR'/>
+
+</configuration>

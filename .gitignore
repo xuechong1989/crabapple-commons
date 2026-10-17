@@ -1,0 +1,11 @@
+target/
+*.class
+*.log
+logs/
+*.iml
+.idea/
+.vscode/
+*.swp
+*.tmp
+.DS_Store
+Thumbs.db

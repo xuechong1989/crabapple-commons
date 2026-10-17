@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+*.jar binary
+*.zip binary
+*.7z binary
+*.rar binary
+*.gz binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.xls binary
+*.xlsx binary
+*.doc binary
+*.docx binary

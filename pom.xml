@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>xc.crabapple</groupId>
+    <artifactId>crabapple-base</artifactId>
+    <version>21-4.2.00</version>
+    <packaging>pom</packaging>
+
+    <name>crabapple-base</name>
+    <description>crabapple 基础类库父项目（聚合与公共属性管理）</description>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>crabapple-core</module>
+    </modules>
+
+    <properties>
+        <crabapple.version>21-4.2.00</crabapple.version>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.clean.plugin>3.5.0</maven.clean.plugin>
+        <maven.compiler.plugin>3.15.0</maven.compiler.plugin>
+        <maven.resources.plugin>3.5.0</maven.resources.plugin>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+    </properties>
+
+</project>
