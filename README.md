@@ -1,4 +1,8 @@
+<p align="center"><img src="assets/logo-128.png" width="96" height="96" alt="Crabapple Commons" /></p>
+
 # 海棠公共库（Crabapple Commons）
+
+> 品牌色：海棠红 `#B3123B` · 海棠粉 `#E63B5F` · 叶绿 `#4F9D69`
 
 [![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple-commons/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple-commons/actions/workflows/ci.yml)
 ![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white)
