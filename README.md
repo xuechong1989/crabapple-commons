@@ -85,7 +85,7 @@ boolean blank = StringUtil.isBlank("");
 ## 目录结构
 
 ```
-crabapple
+crabapple-commons
 ├── src/main/java/xc/crabapple
 │   ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）
 │   └── ssm           数据库/缓存/中间件等集成支持

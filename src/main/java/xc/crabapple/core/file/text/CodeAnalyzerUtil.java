@@ -16,13 +16,8 @@ public final class CodeAnalyzerUtil {
      * 2023-08-02 代码整理
      * 统计所有接口、所有未被（PC客户端）使用的接口
      */
-    public static final String[] statisticsApis(){
-        final String javaPath = "D:/project/src/main/java/com/example/module";
-        final String viewPath = "D:/project/src/main/webapp/view";
-        final String viewMobilePath = "D:/project-mobile/src";
-        final String dataBaseApiPath = "D:/project/api-backup/数据库接口使用.txt";
-        final String allApiUrl = "D:\\待办任务\\接口罗列备份\\allApi.txt";
-        final String noUsedUrl = "D:\\待办任务\\接口罗列备份\\noUsed.txt";
+    public static final String[] statisticsApis(String javaPath, String viewPath, String viewMobilePath,
+                                                String dataBaseApiPath, String allApiUrl, String noUsedUrl){
         //
         final long start = System.currentTimeMillis();
         // 统计所有API
@@ -201,11 +196,8 @@ public final class CodeAnalyzerUtil {
     /**
      * 2023-06-15 mapper扫描
      */
-    public static final String[] statisticsMapper(){
-        final String mapperPath = "D:/project/src/main/java/com/example/module";
-        final String javaScanPath = "D:/project/src/main/java/com/example/module";
-        final String allMapperUrl = "D:/project/allMapper.txt";
-        final String noUsedMapperUrl = "D:/project/noUsedMapper.txt";
+    public static final String[] statisticsMapper(String mapperPath, String javaScanPath,
+                                                  String allMapperUrl, String noUsedMapperUrl){
         //
         final long start = System.currentTimeMillis();
         // 统计所有mapper
