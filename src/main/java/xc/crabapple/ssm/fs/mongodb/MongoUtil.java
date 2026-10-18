@@ -472,6 +472,26 @@ public final class MongoUtil {
         }
         byte[] preEncryptedChunk = null;
         int preReadSize = 0;
+        final InputStream sourceStream = inputStream;
+        if (pos >= 0L && pos < fileSize && sourceStream != null) {
+            int writeWill = (int) Math.min(CHUNK_SIZE, fileSize - pos);
+            byte[] buffer = new byte[writeWill];
+            try {
+                int actualRead = readFully(sourceStream, buffer, writeWill);
+                if (actualRead == writeWill) {
+                    preEncryptedChunk = AESUtil.encryptBytes(getEncryptKey(), buffer, AESUtil.KEY256);
+                    if (preEncryptedChunk != null) {
+                        preReadSize = writeWill;
+                    }
+                }
+                inputStream = new java.io.ByteArrayInputStream(buffer, 0, actualRead);
+            } catch (Throwable throwable) {
+                LogUtil.error("MongoUtil_write_preEncrypt", throwable, md5, fileSize, pos);
+                preEncryptedChunk = null;
+                preReadSize = 0;
+                inputStream = new java.io.ByteArrayInputStream(buffer);
+            }
+        }
         try {
             Map<String, Object> resultMap;
             synchronized (fileLock) {
