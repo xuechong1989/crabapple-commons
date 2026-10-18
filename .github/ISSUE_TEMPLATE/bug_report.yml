@@ -29,14 +29,14 @@ body:
     id: version
     attributes:
       label: 版本 / 提交
-      placeholder: v0.4.0 / commit abc123
+      placeholder: 21-4.2.00 / commit abc123
     validations:
       required: true
   - type: input
     id: environment
     attributes:
       label: 运行环境
-      placeholder: Windows 11 / JDK 21 / Node 22 / ...
+      placeholder: Windows/Linux / JDK 21 / Maven 3.9
     validations:
       required: true
   - type: textarea
