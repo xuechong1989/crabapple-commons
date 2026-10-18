@@ -65,6 +65,7 @@ public class MinioUtilIntegrationTest {
             System.clearProperty("crabapple.minio.sm4Key");
             System.clearProperty("crabapple.minio.sm4Iv");
             if (md5 != null) {
+                boolean cleaned = false;
                 try {
                     MinioClient client = MinioClient.builder()
                             .endpoint(endpoint)
@@ -74,9 +75,11 @@ public class MinioUtilIntegrationTest {
                             .bucket("crabapple")
                             .object(md5)
                             .build());
+                    cleaned = true;
                 } catch (Throwable ignored) {
-                    // 清理失败不掩盖测试结果；测试对象只含随机文本
+                    // 清理失败下面断言会暴露；测试对象只含随机文本
                 }
+                assertTrue(cleaned, "MinIO test object cleanup failed");
             }
         }
     }
