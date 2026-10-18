@@ -1190,6 +1190,13 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.7.1</version>
+            <optional>true</optional>
+        </dependency>
+
     </dependencies>
 
     <profiles>
