@@ -78,7 +78,9 @@ public final class SpringbootUtil {
             NetUtil.init();
             PaginationUtil.init(pageIndex, pageSize);
         } catch (Throwable throwable) {
-            LogUtil.error("SpringbootUtil_start_t1", throwable, routerUrl);
+            LogUtil.error("SpringbootUtil_start_t1", throwable, "crabapple 启动失败");
+            // 启动失败必须快速退出，避免容器未初始化完成却继续执行后续初始化逻辑
+            throw new RuntimeException("crabapple 启动失败", throwable);
         }
     }
 
