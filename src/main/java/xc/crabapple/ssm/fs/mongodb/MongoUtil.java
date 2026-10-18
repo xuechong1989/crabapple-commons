@@ -99,9 +99,9 @@ public final class MongoUtil {
         return p_encryptKey;
     }
     //
-    private static final String FILE_UPLOADING = "file_uploading";  //文件上传中
-    private static final String FILE_UPLOAD_SUCCESS = "file_upload_success";  //文件成功
-    private static final String FILE_UPLOAD_FAST = "file_upload_fast";  //文件秒传
+    public static final String FILE_UPLOADING = "file_uploading";  //文件上传中
+    public static final String FILE_UPLOAD_SUCCESS = "file_upload_success";  //文件成功
+    public static final String FILE_UPLOAD_FAST = "file_upload_fast";  //文件秒传
     private static final String FILE_UPLOAD_ERROR = "file_upload_error";  //文件上传异常，上传失败错误代码
     private static final String MONGO_NOT_INIT = "mongo_not_init";  //MongoDB未初始化
 

@@ -35,7 +35,7 @@ cd crabapple-commons
 mvn clean verify
 ```
 
-当前包含 45 个单元测试；CI 使用 JDK 21 + `mvn -B -ntp clean verify`。
+当前包含 48 个测试（45 个单元测试 + 3 个 Testcontainers MongoDB 集成测试；无 Docker 环境时集成测试自动跳过）；CI 使用 JDK 21 + `mvn -B -ntp clean verify`。
 
 ### 安装到本机 Maven 仓库
 
