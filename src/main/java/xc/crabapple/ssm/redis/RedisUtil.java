@@ -55,7 +55,7 @@ public final class RedisUtil {
     private static Map<String, RedisConfigBean> p_serverMap = null;  // 连接集合，当前客户端可以同时连接多个redis服务器
     public static boolean connected = false;
     private static String p_cipherType = "";  // 加密方式，目前支持两种方式：sm4 / aes128。为空或no表示不加密
-    private static String p_cipherKey = "crabapple-240508";  // 看加密方式对应秘钥，必须为16位ASCII字符串
+    private static String p_cipherKey = "";  // 看加密方式对应秘钥，必须为16位ASCII字符串；默认不提供密钥
 
     /**
      * 2017-10-09 1.0.0

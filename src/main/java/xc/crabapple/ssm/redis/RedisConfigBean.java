@@ -33,8 +33,8 @@ public final class RedisConfigBean extends Object{
     private Long reconnectIntervalMillis = 5000L;  // 两次重新连接之间的间隔时间，单位毫秒
     private Integer reconnectMaxCount = 3;  // 最大重连次数
     private Pool pool;  // 当前所用的连接池类型
-    private String cipherType = "sm4";  // 加密方式，目前支持两种方式：sm4 / aes128。为空或no表示不加密
-    private String cipherKey = "crabapple-240508";  // 看加密方式对应秘钥，必须为16位ASCII字符串
+    private String cipherType = "no";  // 加密方式，目前支持两种方式：sm4 / aes128。为空或no表示不加密
+    private String cipherKey = "";  // 看加密方式对应秘钥，必须为16位ASCII字符串；默认不提供密钥
 
     public RedisConfigBean(){
 

@@ -62,10 +62,16 @@ public final class MinioUtil {
     // 覆盖重写递归保护：写入后核对不过会再调一次本方法重写，重写后仍不过直接判失败，防止无限递归
     private static final ThreadLocal<Integer> s_rewriteDepth = new ThreadLocal<Integer>();
 
-    private static final String P_SM4_KEY = "0000000000000000";  // 示例密钥，生产环境请替换
-    private static final String P_SM4_IV = "0000000000000000";  // 示例IV，生产环境请替换
+    private static final String P_SM4_KEY = System.getProperty("crabapple.minio.sm4Key", "");  // 部署方配置，禁止使用固定默认值
+    private static final String P_SM4_IV = System.getProperty("crabapple.minio.sm4Iv", "");  // 部署方配置，禁止使用固定默认值
     private static final String P_SM4_MODE = "CBC";
     private static final Integer P_SM4_PADDING = 7;
+
+    private static void requireSm4Config() {
+        if (StringUtil.isBlank(P_SM4_KEY) || StringUtil.isBlank(P_SM4_IV)) {
+            throw new IllegalStateException("MinioUtil 未配置 SM4 密钥/IV，请设置系统属性 crabapple.minio.sm4Key / crabapple.minio.sm4Iv");
+        }
+    }
 
     /**
      * 2025-08-20
@@ -256,6 +262,7 @@ public final class MinioUtil {
             metadataMap.put("status", "ok");
             //
             byte[] bytes = FileUtil.file2bytes(localSourceUrl);
+            requireSm4Config();
             byte[] cipherBytes = Sm4Util.encryptBytes(P_SM4_KEY, P_SM4_IV, bytes, P_SM4_MODE, P_SM4_PADDING);
             inputStream = new ByteArrayInputStream(cipherBytes);
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
@@ -418,6 +425,7 @@ public final class MinioUtil {
             // PKCS7 填充后密文长度 = ((明文长度 / 16) + 1) * 16
             final long cipherLen = (size / 16 + 1) * 16;
             final InputStream fileInputStream = new FileInputStream(localSourceUrl);
+            requireSm4Config();
             final InputStream cipherInputStream = Sm4Util.encryptReturnInputStream(P_SM4_KEY, P_SM4_IV, fileInputStream, P_SM4_MODE, P_SM4_PADDING);
             if(cipherInputStream == null){
                 IOUtil.close(fileInputStream);
@@ -675,6 +683,7 @@ public final class MinioUtil {
             minioInputStream = completableFuture.get();
             // 2026-08-12 所有文件全部最终存储在云盘
             // 流式解密（13-3）：CipherInputStream 分段处理，避免全量读内存OOM；返回流由调用方读取并关闭，关闭时级联关闭minioInputStream
+            requireSm4Config();
             InputStream decryptedInputStream = Sm4Util.decryptReturnInputStream(P_SM4_KEY, P_SM4_IV, minioInputStream, P_SM4_MODE, P_SM4_PADDING);
             if(decryptedInputStream == null){
                 IOUtil.close(minioInputStream);

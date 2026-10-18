@@ -19,7 +19,7 @@ public final class RedisDao extends DaoBase {
     private Serializable content;  // 实际内容，推荐使用xc_crabapple中的dco基类存入
     private long duration = 0L;  // 有效存储时间，0表示永久有效，单位秒
     private String cipher = "no";  // 是否加密，空对象或空字符串或no表示不加密， aes-128表示AES-128方式加密
-    private String cipherKey = "crabapple";  // 加密码
+    private String cipherKey = "";  // 加密码；默认不提供密钥
     //非配置
     private String ip;  // 存入时的调用方ip
     private String saveTime;  // 存入时的时间点，精确到毫秒，格式如2020-06-15 17:35:58:123

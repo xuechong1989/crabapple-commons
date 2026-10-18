@@ -98,6 +98,8 @@ crabapple-commons
 - 涉及第三方服务（短信、OCR、邮件等）的账号密钥在源码中均为占位符，需自行申请后配置。
 - 部分工具类依赖本地软件或资源文件（如 tesseract 语言模型、chromedriver、7z 等），详见对应类的注释说明；Playwright 的驱动首次运行会自动下载，离线环境可参考官方文档预置。
 - `crabapple-commons` 的依赖中包含第三方收费组件（如 spire.pdf），其许可与使用限制请遵循各自官方说明。
+- `Redis` 缓存默认不加密；启用 `sm4`/`aes128` 时必须显式设置 `cipherKey`，代码中不提供默认密钥。
+- `MinioUtil` 的文件加密需要设置系统属性 `crabapple.minio.sm4Key` / `crabapple.minio.sm4Iv`，未配置时加密上传/下载会直接报错，避免使用固定默认密钥。
 - 日志配置模板参见 `src/main/java/xc/crabapple/core/log/` 目录下 `标准配置文件-logback.xml` 与 `标准配置文件-log4j2.xml`。
 
 ## 安全说明
