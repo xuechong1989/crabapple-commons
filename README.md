@@ -1,47 +1,57 @@
 # 海棠公共库（Crabapple Commons）
 
-[![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple-commons/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple-commons/actions/workflows/ci.yml) ![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white) [![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE) [![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple-commons/releases)
+[![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple-commons/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple-commons/actions/workflows/ci.yml)
+![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white)
+[![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple-commons/releases)
 
-**海棠公共库（Crabapple Commons）** 是一套面向服务端开发的 Java 21 通用公共库，自 2016 年起持续迭代打磨。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库即 `crabapple-commons` 的开源版本，采用单模块结构。
+**海棠公共库（Crabapple Commons）** 是面向服务端开发的 Java 21 通用工具库，沉淀文件、网络、加解密、OCR、短信、数据库/中间件集成等常用能力。
 
-`crabapple-commons` 沉淀了服务端日常开发中高频使用的通用能力：
+## 项目定位与适用范围
 
-- 文件处理：HTML / 文本 / Office / PDF / 图片 / 压缩包 / 音频 / CAD / 配置文件 / 水印处理 / 超大文件
-- 网络：HTTP / HTTPS / WebSocket / 邮件 / 内置高可用与负载均衡算法
-- 数据传输：JSON / XML / 序列化
-- 日志：基于 logback 的统一日志与跟踪（另附 log4j2 标准配置模板）
-- 加密与摘要：AES / RSA / DES / SM2 / SM3 / SM4 / MD5 / SHA / CRC / BCrypt / PBKDF2 / Base64
-- OCR：百度 OCR / 合合 OCR / tesseract
-- 短信：腾讯云 / 阿里云 / 网关短信
-- 数据库与中间件：MySQL / Oracle / 达梦 / Redis / MongoDB / ElasticSearch / RocketMQ / LDAP 等
-- 浏览器自动化：Selenium / Playwright
-- 其它：分页 / 排序 / 正则表达式 / 随机数 / 数学 / 时间管理 / 定时器 / 数据流 / 二维码 / 多线程与线程池 / Shell 调用 / 对象克隆 / 雪花算法 等
+这是一个 **Java 类库（jar）**，不是可独立启动的服务：
 
-## 设计理念
-
-- 尽量仅依赖 JDK 底层，保持稳定的底层依赖；
-- 脚本化调用，追求行化（一行完成常见任务），兼顾功能与易用；
-- 方便且统一的底层 API 调用模式；
-- 统一的规范与标准（统一的数据对象模型与标准接口数据格式）；
-- 性能优化及防止误写（如各类空值安全处理）。
+- 适合作为 Java 21 / Spring Boot 服务端项目的 Maven 依赖；
+- 适合复用文件、HTTP、加解密、分页、定时器、日志、短信、OCR 等基础能力；
+- `crabapple-standardms`、`crabapple-sensitive` 都依赖本库；
+- 不提供 Web 端口、进程入口或管理界面，不能通过 `java -jar` 启动；
+- 部分工具依赖 Windows 路径、本地 Chrome/ChromeDriver、Tesseract、LibreOffice、MinIO、Redis 等外部资源，使用前请阅读对应类的注释。
 
 ## 环境要求
 
-- JDK 21
-- Maven 3.9+
+| 依赖 | 要求 |
+|---|---|
+| JDK | 21（`java.version=21`） |
+| Maven | 3.9+ |
+| 操作系统 | Linux / Windows；部分工具类有平台限制 |
 
-## 快速开始
+## 构建与安装
 
-### 构建
+### 只构建、跑单元测试
 
-```shell
+```bash
+git clone https://github.com/xuechong1989/crabapple-commons.git
+cd crabapple-commons
 mvn clean verify
 ```
 
-> PDF/A 转换相关类（`PdfaUtil`、`PdfSpireUtil`）默认不参与编译，以保证默认构建只依赖 Maven Central。
-> 如需启用，请先确认 Spire.PDF 的授权条款，再执行 `mvn clean verify -Ppdf-spire`。
+当前包含 38 个单元测试；CI 使用 JDK 21 + `mvn -B -ntp clean verify`。
 
-### 引入依赖
+### 安装到本机 Maven 仓库
+
+`crabapple-standardms` / `crabapple-sensitive` 通过 Maven 坐标依赖本库。首次构建这两个服务前，需要先安装：
+
+```bash
+mvn clean install
+```
+
+如果只想快速安装、跳过测试：
+
+```bash
+mvn clean install -DskipTests
+```
+
+安装后坐标：
 
 ```xml
 <dependency>
@@ -51,73 +61,132 @@ mvn clean verify
 </dependency>
 ```
 
-### 快速上手
+> 本仓库没有配置 Maven Central 的 `distributionManagement`；默认使用本地 `~/.m2` 或你自己的私有 Nexus/Artifactory。
 
-工具类均为静态方法，引入依赖后直接调用：
+### 可选：PDF/A（Spire.PDF）
 
-```java
-LogUtil.init("logback", "debug");
-LogUtil.print("demo_1", "hello crabapple");
+`src/main/spire/java` 下的 PDF/A 相关类默认不参与编译，避免默认构建依赖商业仓库。确认 Spire.PDF 授权条款后，可显式启用：
 
-boolean blank = StringUtil.isBlank("");
+```bash
+mvn clean verify -Ppdf-spire
 ```
 
-## 可选依赖说明
+未购买/未配置 Spire 授权时，不要在生产环境启用该 profile。
 
-`crabapple-commons` 采用“核心常驻、集成可选”的依赖策略：JSON / HTTP / 文件 / 加解密等基础能力保留为默认依赖；涉及第三方服务或框架集成的依赖均标记 `optional`，不向下传递，使用对应功能时需自行引入：
+## 作为依赖使用
 
-| 功能 | 需自行引入的依赖 | 说明 |
-| --- | --- | --- |
-| 日志输出 | logback-classic、logback-core | 默认只含 slf4j API，不强制日志实现；配置模板见下文 |
-| Spring / MyBatis 集成 | spring-boot-starter-web、spring-boot-starter-jdbc、mybatis、mybatis-spring 等 | `xc.crabapple.ssm` 下的集成类使用 |
-| 浏览器自动化 | selenium-java + guava、playwright | Selenium 需本地 driver；Playwright 需 Chromium（驱动首次运行自动下载） |
-| 视频处理 | javacv-platform | 仅 `VideoUtil` 使用，含多平台原生库，体积较大 |
-| Word 文档 | docx4j-core 等 | docx 的读写与转换 |
-| PDF 处理 | itextpdf、html2pdf、kernel、spire.pdf | 按工具类需要引入；spire.pdf 为商业组件，遵循其官方授权 |
-| 文档转换 | jodconverter-core | 需本地安装 LibreOffice |
-| OCR | tess4j | 需本地安装 tesseract 及语言模型 |
-| 短信 | tencentcloud-sdk-java-sms、dysmsapi20170525、qcloudsms、okhttp | 按短信通道引入 |
-| 对象存储 | minio | |
-| 数据库 | mysql-connector-j、DmJdbcDriver18 | 按数据库类型引入驱动 |
-| 连接池 / 缓存 | druid、redisson | |
-| 内嵌容器 | tomcat-embed-core 等 | 内嵌 Web 场景 |
+工具类以静态方法为主：
+
+```java
+import xc.crabapple.core.log.LogUtil;
+import xc.crabapple.core.collection.StringUtil;
+
+public class Demo {
+    public static void main(String[] args) {
+        LogUtil.init("logback", "debug");
+        LogUtil.print("demo_1", "hello crabapple");
+
+        boolean blank = StringUtil.isBlank("");
+        System.out.println(blank);
+    }
+}
+```
+
+日志实现默认只依赖 slf4j API；需要 logback 输出时，请在业务项目中显式加入 `logback-classic`，并放置 logback 配置。
+
+## 功能范围
+
+- 文件：文本、Office、PDF、图片、压缩包、音频、CAD、配置文件、水印、大文件
+- 网络：HTTP/HTTPS、WebSocket、邮件、高可用与负载均衡
+- 数据：JSON、XML、序列化
+- 日志：slf4j/logback 封装与配置模板
+- 加解密：AES、RSA、DES、SM2、SM3、SM4、MD5、SHA、CRC、BCrypt、PBKDF2、Base64
+- OCR：百度 OCR、合合 OCR、Tesseract
+- 短信：腾讯云、阿里云、网关短信
+- 数据库/中间件：MySQL、Oracle、达梦、Redis、MongoDB、Elasticsearch、RocketMQ、LDAP 等
+- 浏览器自动化：Selenium、Playwright
+- 其他：分页、排序、正则、随机数、数学、时间、定时器、数据流、二维码、线程池、Shell、对象克隆、雪花算法
+
+## 可选依赖
+
+本库采用“核心常驻、集成可选”的策略。以下能力需要业务项目自行引入依赖：
+
+| 功能 | 需要自行引入 |
+|---|---|
+| 日志输出 | `logback-classic`、`logback-core` |
+| Spring / MyBatis 集成 | `spring-boot-starter-web`、`spring-boot-starter-jdbc`、`mybatis`、`mybatis-spring` 等 |
+| 浏览器自动化 | `selenium-java` + Guava、Playwright |
+| 视频处理 | `javacv-platform`（含多平台原生库，体积大） |
+| Word | `docx4j-core` 等 |
+| PDF | `itextpdf`、`html2pdf`、`kernel`、`spire.pdf`（按类引入） |
+| 文档转换 | `jodconverter-core` + 本地 LibreOffice |
+| OCR | `tess4j` + 本地 Tesseract 语言模型 |
+| 短信 | 腾讯云/阿里云/网关短信 SDK |
+| 对象存储 | `minio` |
+| 数据库 | `mysql-connector-j`、`DmJdbcDriver18` 等 |
+| 连接池/缓存 | `druid`、`redisson` |
+| 内嵌容器 | `tomcat-embed-core` 等 |
+
+## 配置与安全
+
+- 第三方服务（短信、OCR、邮件等）的账号密钥在源码中均为占位符（`your-api-key`、`your-password`），必须由部署方替换。
+- Redis 加密默认关闭；启用 `sm4` / `aes128` 时必须显式设置 `cipherKey`，代码中不提供默认密钥。
+- `MinioUtil` 的文件加密需要设置系统属性：
+
+```bash
+-Dcrabapple.minio.sm4Key=<16位密钥>
+-Dcrabapple.minio.sm4Iv=<16位IV>
+```
+
+未配置时加密上传/下载会直接报错，避免静默使用固定默认密钥。
+
+- HTTPS 默认使用 JVM 信任库与标准主机名校验；`HttpsUtil.getTrustAllHttpClient()` 仅用于内网自签名/测试环境，使用前请评估中间人攻击风险。
+- `Aes2Util` / `Aes3Util` 的 ECB 模式仅用于兼容历史数据；新系统建议使用 AES/GCM。
+- DES 强度不足，仅建议对接遗留系统。
+- 日志不会输出密钥、密码；部署侧密钥材料不要提交到 Git。
 
 ## 目录结构
 
-```
+```text
 crabapple-commons
 ├── src/main/java/xc/crabapple
 │   ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）
 │   └── ssm           数据库/缓存/中间件等集成支持
 ├── src/main/spire/java   PDF/A 可选源码（-Ppdf-spire 时参与编译）
-└── pom.xml           单模块 POM（artifactId: crabapple-commons）
+├── src/test/java     单元测试
+└── pom.xml           单模块 POM
 ```
 
-## 使用说明
+## 部署与升级
 
-- 涉及第三方服务（短信、OCR、邮件等）的账号密钥在源码中均为占位符，需自行申请后配置。
-- 部分工具类依赖本地软件或资源文件（如 tesseract 语言模型、chromedriver、7z 等），详见对应类的注释说明；Playwright 的驱动首次运行会自动下载，离线环境可参考官方文档预置。
-- `crabapple-commons` 的依赖中包含第三方收费组件（如 spire.pdf），其许可与使用限制请遵循各自官方说明。
-- `Redis` 缓存默认不加密；启用 `sm4`/`aes128` 时必须显式设置 `cipherKey`，代码中不提供默认密钥。
-- `MinioUtil` 的文件加密需要设置系统属性 `crabapple.minio.sm4Key` / `crabapple.minio.sm4Iv`，未配置时加密上传/下载会直接报错，避免使用固定默认密钥。
-- 日志配置模板参见 `src/main/java/xc/crabapple/core/log/` 目录下 `标准配置文件-logback.xml` 与 `标准配置文件-log4j2.xml`。
+- 库本身没有“启动”步骤；部署方式是 `mvn install` 到本地仓库，或发布到私有 Maven 仓库后由业务项目依赖。
+- 升级版本时修改业务项目中的 `<version>`，重新构建并跑业务回归；本库的单元测试不能替代业务集成测试。
+- 如果使用 `crabapple-standardms` / `crabapple-sensitive`，先安装本库，再构建对应服务。
 
-## 安全说明
+## 测试与 CI
 
-- HTTPS 请求默认使用 JVM 信任库与标准主机名校验；仅当明确需要（内网自签名证书、测试环境）时才使用 `HttpsUtil.getTrustAllHttpClient()` / `getTrustAllSSLSocketFactory()` 跳过证书校验，并自行评估中间人攻击风险。
-- 加密工具类中 ECB 模式（`Aes2Util.encrypt/decrypt`、`Aes3Util`）仅为兼容历史数据保留，新系统建议使用 `Aes2Util.encryptGcm/decryptGcm`（AES/GCM 随机 IV + 完整性校验）。
-- DES 密钥仅 56 位，强度不足，仅建议用于对接遗留系统，新系统请使用 AES。
-- 工具类不会将密钥、密码输出到日志。
-- 部署侧的密钥材料（配置中的 SM2/SM4 密钥、混淆密钥等）请独立保管，不要随代码入库。
+```bash
+mvn clean verify
+```
 
-## 参与贡献
+CI 工作流见 [.github/workflows/ci.yml](.github/workflows/ci.yml)，使用 Temurin JDK 21、Maven 缓存和 `mvn -B -ntp clean verify`。
 
-欢迎通过 Issue / Pull Request 参与贡献；提交前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+## 适用与不适用
 
-## 安全政策
+**适合：**
 
-如发现安全问题，请勿公开提交 Issue，请按 [SECURITY.md](SECURITY.md) 所述方式私下报告。
+- Java 21 服务端工具复用；
+- 作为 `crabapple-standardms` / `crabapple-sensitive` 的基础库；
+- 需要统一日志、HTTP、加解密、文件处理的服务。
 
-## 许可证
+**不适合：**
 
-本项目基于 [Apache License 2.0](LICENSE) 开源；第三方组件的许可与署名信息见 [NOTICE](NOTICE)。
+- 直接作为独立服务部署；
+- 无 JDK/Maven 的环境；
+- 需要开箱即用的云原生可观测性/配置中心/服务治理的平台（本库只提供基础工具）。
+
+## 参与贡献与许可证
+
+欢迎 Issue / Pull Request，提交前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)；安全问题请按 [SECURITY.md](SECURITY.md) 私下报告。
+
+本项目采用 [Apache License 2.0](LICENSE)。第三方组件许可与署名见 [NOTICE](NOTICE)；其中 itextpdf 为 AGPL、Spire.PDF 为商业组件，使用对应可选功能前请自行确认授权。
