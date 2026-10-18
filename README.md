@@ -35,7 +35,7 @@ cd crabapple-commons
 mvn clean verify
 ```
 
-当前包含 38 个单元测试；CI 使用 JDK 21 + `mvn -B -ntp clean verify`。
+当前包含 40 个单元测试；CI 使用 JDK 21 + `mvn -B -ntp clean verify`。
 
 ### 安装到本机 Maven 仓库
 

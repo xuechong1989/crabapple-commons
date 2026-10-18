@@ -1,8 +1,5 @@
 package xc.crabapple.core.file.image.captcha.google;
 
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
-import com.google.code.kaptcha.util.Config;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,65 +11,53 @@ import xc.crabapple.core.io.IOUtil;
 import xc.crabapple.core.log.LogUtil;
 
 import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.Properties;
+import java.security.SecureRandom;
 
 /**
  * 2023-05-19
- * 验证码工具类
+ * 验证码工具类。
+ *
+ * 说明：原实现依赖 com.github.penggle:kaptcha 2.3.2，该版本存在未修复的
+ * “使用弱随机数”安全问题。这里改用 JDK SecureRandom + Java2D 生成，
+ * 不改变 createText/createImage/getKey 等公开方法签名。
  */
 public final class GoogleCaptchaUtil {
 
-	private static Producer p_captchaProducer = null;
+    private static final SecureRandom RANDOM = new SecureRandom();
+    private static final char[] CHARS = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ".toCharArray();
+    private static final int WIDTH = 130;
+    private static final int HEIGHT = 50;
+    private static final int LENGTH = 4;
+    private static final String SESSION_KEY = "KAPTCHA_SESSION_KEY";
 
-	public static final void init(){
-		if(p_captchaProducer != null){
-			return;
-		}
-        // 2025-06-10 add
-        // 需在调用AWT前执行
+    public static final void init(){
+        // 需在调用 AWT 前执行
         System.setProperty("java.awt.headless", "true");
-        //
-		ImageIO.setUseCache(false);
-		Properties properties = new Properties();
-		properties.put("kaptcha.border", "no");
-//		properties.put("kaptcha.border.color", "68,140,187");
-		properties.put("kaptcha.textproducer.font.color", "33,93,147");
-//		properties.put("kaptcha.image.width", "130");
-//		properties.put("kaptcha.image.height", "50");
-//		properties.put("kaptcha.textproducer.font.size", "40");
-//		properties.put("kaptcha.textproducer.char.space", "4");
-		properties.put("kaptcha.textproducer.char.length", "4");
-//		properties.put("kaptcha.background.clear.from", "239,246,255");
-//		properties.put("kaptcha.background.clear.to", "239,246,255");
-//		properties.put("kaptcha.textproducer.font.names", "宋体,楷体,微软雅黑");
-		Config config = new Config(properties);
-		p_captchaProducer = config.getProducerImpl();
-	}
+        ImageIO.setUseCache(false);
+    }
 
     /**
      * 2023-05-19
-     * 创建jpg或jpeg格式图片的验证码并推送给客户端
+     * 创建 jpg 格式图片的验证码并推送给客户端
      */
     public static final void crateJpg2client(final HttpServletRequest request, final HttpServletResponse response){
         response.setDateHeader("Expires", 0);
-        // Set standard HTTP/1.1 no-cache headers.
         response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
-        // Set IE extended HTTP/1.1 no-cache headers (use addHeader).
         response.addHeader("Cache-Control", "post-check = 0, pre-check = 0");
-        // Set standard HTTP/1.0 no-cache header.
         response.setHeader("Pragma", "no-cache");
-        // return a jpeg
         response.setContentType("image/jpeg");
-        // create the text for the image
+
         String capText = createText();
-        // store the text in the session
         final String key = getKey();
         request.getSession().setAttribute(key, capText);
-        // create the image with the text
+
         BufferedImage bufferedImage = createImage(capText);
         ServletOutputStream servletOutputStream = null;
-        // write the data out
         try {
             servletOutputStream = response.getOutputStream();
             ImageIO.write(bufferedImage, "jpg", servletOutputStream);
@@ -92,22 +77,16 @@ public final class GoogleCaptchaUtil {
 
     /**
      * 2023-05-19
-     * 创建gif格式图片的验证码并推送给客户端
+     * 创建 gif 格式图片的验证码并推送给客户端
      */
     public static final void createGif2client(final HttpServletResponse response, final String key, final long expireTime, final int width, final int height, final int length){
         setHeader(response);
-        // 三个参数分别为宽、高、位数
         GifCaptcha gifCaptcha = new GifCaptcha(width, height, length);
-        // 设置类型：字母数字混合
         gifCaptcha.setCharType(Captcha.TYPE_DEFAULT);
-        // 保存验证码
         String captchaValue = gifCaptcha.text();
         captchaValue = StringUtil.toLowerCase(captchaValue);
-        // 2026-08-20 构建替代redis的本地API持久化缓存框架
-        // 验证码改纯内存存储：短命一次性数据无需重启恢复，重启恢复旧验证码反而有安全隐患
         LocalCacheUtil.set(key, captchaValue, expireTime, true);
         ServletOutputStream servletOutputStream = null;
-        // 输出图片流
         try {
             servletOutputStream = response.getOutputStream();
             gifCaptcha.out(servletOutputStream);
@@ -122,8 +101,7 @@ public final class GoogleCaptchaUtil {
      * 2023-05-19
      */
     public static final String getKey(){
-        String key = Constants.KAPTCHA_SESSION_KEY;
-        return key;
+        return SESSION_KEY;
     }
 
     /**
@@ -134,24 +112,49 @@ public final class GoogleCaptchaUtil {
         if(object == null) {
             return null;
         }
-        String value = object.toString();
-        return value;
+        return object.toString();
     }
 
     /**
-     * 2023-05-19
+     * 使用 SecureRandom 生成验证码文本。
      */
     public static final String createText(){
-        String text = p_captchaProducer.createText();
-        return text;
+        StringBuilder text = new StringBuilder(LENGTH);
+        for(int i = 0; i < LENGTH; i++){
+            text.append(CHARS[RANDOM.nextInt(CHARS.length)]);
+        }
+        return text.toString();
     }
 
     /**
-     * 2023-05-19
+     * 使用 Java2D 生成验证码图片。
      */
     public static final BufferedImage createImage(final String text){
-        BufferedImage bufferedImage = p_captchaProducer.createImage(text);
-        return bufferedImage;
+        BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        Graphics2D graphics = image.createGraphics();
+        try{
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            graphics.setColor(new Color(239, 246, 255));
+            graphics.fillRect(0, 0, WIDTH, HEIGHT);
+
+            // 干扰线
+            for(int i = 0; i < 8; i++){
+                graphics.setColor(new Color(120 + RANDOM.nextInt(100), 140 + RANDOM.nextInt(80), 160 + RANDOM.nextInt(80)));
+                graphics.drawLine(RANDOM.nextInt(WIDTH), RANDOM.nextInt(HEIGHT), RANDOM.nextInt(WIDTH), RANDOM.nextInt(HEIGHT));
+            }
+
+            String value = StringUtil.isBlank(text) ? createText() : text;
+            graphics.setFont(new Font("SansSerif", Font.BOLD, 28));
+            for(int i = 0; i < value.length(); i++){
+                graphics.setColor(new Color(20 + RANDOM.nextInt(100), 40 + RANDOM.nextInt(100), 80 + RANDOM.nextInt(100)));
+                int x = 18 + i * 28 + RANDOM.nextInt(4);
+                int y = 34 + RANDOM.nextInt(6);
+                graphics.drawString(String.valueOf(value.charAt(i)), x, y);
+            }
+        }finally{
+            graphics.dispose();
+        }
+        return image;
     }
 
 }
