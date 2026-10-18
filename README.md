@@ -2,7 +2,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/xuechong1989/crabapple/ci.yml?branch=main&style=flat-square&label=CI&logo=githubactions&logoColor=white)](https://github.com/xuechong1989/crabapple/actions/workflows/ci.yml) ![JDK](https://img.shields.io/badge/JDK-21-C9184A?style=flat-square&logo=openjdk&logoColor=white) [![License](https://img.shields.io/badge/License-Apache--2.0-C9184A?style=flat-square&logo=apache&logoColor=white)](LICENSE) [![Version](https://img.shields.io/badge/Version-21--4.2.00-C9184A?style=flat-square)](https://github.com/xuechong1989/crabapple/releases)
 
-crabapple（中文名“海棠果”）是一套面向服务端开发的通用 Java 类库，自 2016 年起持续迭代打磨。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库为其基础核心模块 `crabapple-core` 的开源版本。
+crabapple（中文名“海棠果”）是一套面向服务端开发的通用 Java 类库，自 2016 年起持续迭代打磨。开发初衷：减少冗余、行化使用、统一规范、方案积累。本仓库即基础核心模块 `crabapple-core` 的开源版本，采用单模块结构。
 
 `crabapple-core` 沉淀了服务端日常开发中高频使用的通用能力：
 
@@ -86,11 +86,11 @@ boolean blank = StringUtil.isBlank("");
 
 ```
 crabapple
-├── crabapple-core        核心类库（本仓库唯一模块）
-│   └── src/main/java/xc/crabapple
-│       ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）
-│       └── ssm           数据库/缓存/中间件等集成支持
-└── pom.xml               聚合与父 POM
+├── src/main/java/xc/crabapple
+│   ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）
+│   └── ssm           数据库/缓存/中间件等集成支持
+├── src/main/spire/java   PDF/A 可选源码（-Ppdf-spire 时参与编译）
+└── pom.xml           单模块 POM（artifactId: crabapple-core）
 ```
 
 ## 使用说明
@@ -98,7 +98,7 @@ crabapple
 - 涉及第三方服务（短信、OCR、邮件等）的账号密钥在源码中均为占位符，需自行申请后配置。
 - 部分工具类依赖本地软件或资源文件（如 tesseract 语言模型、chromedriver、7z 等），详见对应类的注释说明；Playwright 的驱动首次运行会自动下载，离线环境可参考官方文档预置。
 - `crabapple-core` 的依赖中包含第三方收费组件（如 spire.pdf），其许可与使用限制请遵循各自官方说明。
-- 日志配置模板参见 `crabapple-core/src/main/java/xc/crabapple/core/log/` 目录下 `标准配置文件-logback.xml` 与 `标准配置文件-log4j2.xml`。
+- 日志配置模板参见 `src/main/java/xc/crabapple/core/log/` 目录下 `标准配置文件-logback.xml` 与 `标准配置文件-log4j2.xml`。
 
 ## 安全说明
 
