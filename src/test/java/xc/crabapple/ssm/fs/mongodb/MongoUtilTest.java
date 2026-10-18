@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,12 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class MongoUtilTest {
 
+    private static final String TEST_KEY = UUID.randomUUID().toString();
+
     @Test
     public void aesRoundTrip() throws Throwable {
         byte[] plain = "crabapple mongo chunk".getBytes(StandardCharsets.UTF_8);
-        byte[] encrypted = AESUtil.encryptBytes("test-key", plain, AESUtil.KEY256);
+        byte[] encrypted = AESUtil.encryptBytes(TEST_KEY, plain, AESUtil.KEY256);
         assertNotNull(encrypted);
-        byte[] decrypted = AESUtil.decryptBytes("test-key", encrypted, AESUtil.KEY256);
+        byte[] decrypted = AESUtil.decryptBytes(TEST_KEY, encrypted, AESUtil.KEY256);
         assertEquals("crabapple mongo chunk", new String(decrypted, StandardCharsets.UTF_8));
     }
 
@@ -37,9 +40,9 @@ public class MongoUtilTest {
 
     @Test
     public void readRunnableDecryptsChunk() throws Throwable {
-        System.setProperty("crabapple.mongo.encrypt.key", "test-key");
+        System.setProperty("crabapple.mongo.encrypt.key", TEST_KEY);
         byte[] plain = "hello".getBytes(StandardCharsets.UTF_8);
-        byte[] encrypted = AESUtil.encryptBytes("test-key", plain, AESUtil.KEY256);
+        byte[] encrypted = AESUtil.encryptBytes(TEST_KEY, plain, AESUtil.KEY256);
         Document document = new Document("content", new Binary(encrypted));
 
         MongoReadRunnable runnable = new MongoReadRunnable(0, document);

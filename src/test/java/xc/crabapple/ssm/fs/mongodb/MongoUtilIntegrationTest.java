@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -28,12 +29,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Testcontainers(disabledWithoutDocker = true)
 public class MongoUtilIntegrationTest {
 
+    private static final String ENCRYPT_KEY = UUID.randomUUID().toString();
+
     @Container
     private static final MongoDBContainer MONGO = new MongoDBContainer("mongo:7.0");
 
     @BeforeAll
     public static void init() {
-        MongoUtil.init(new MongoConfig(MONGO.getReplicaSetUrl(), "cloudkd_test", "integration-test-key"));
+        MongoUtil.init(new MongoConfig(MONGO.getReplicaSetUrl(), "cloudkd_test", ENCRYPT_KEY));
     }
 
     @AfterAll
