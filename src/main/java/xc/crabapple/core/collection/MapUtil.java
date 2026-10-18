@@ -115,7 +115,7 @@ public final class MapUtil {
         Map<String, Object> params = new HashMap<>();
         int length = args.length;
         if(length % 2 != 0){
-            LogUtil.error("crabapple-core-MapUtil_getParams_1", length, args);
+            LogUtil.error("crabapple-commons-MapUtil_getParams_1", length, args);
             return params;
         }
         //

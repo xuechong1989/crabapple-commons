@@ -41,7 +41,7 @@ public final class UrlUtil{
     /**
      * 2025-02-18
      * 当前业务项目的外部依赖的第三方jar文件根目录绝对路径
-     * 返回值如：D:/data/maven/repository/xc/crabapple/crabapple-core/21-4.2.00/crabapple-core-21-4.2.00.jar
+     * 返回值如：D:/data/maven/repository/xc/crabapple/crabapple-commons/21-4.2.00/crabapple-commons-21-4.2.00.jar
      */
     public static final String getExJarRootPath(){
         try {
@@ -325,11 +325,11 @@ public final class UrlUtil{
         for(String param : paramList){
             //可以兼容两个或者多个个&&的情况
             if (StringUtil.isBlank(param)) {
-                LogUtil.warn("crabapple-core-UrlUtil_paramsParser_3", "参数不合法", params);
+                LogUtil.warn("crabapple-commons-UrlUtil_paramsParser_3", "参数不合法", params);
                 continue;
             }
             if(!StringUtil.containOf(param, "=")){
-                LogUtil.error("crabapple-core-UrlUtil_paramsParser_1", "参数不合法", params);
+                LogUtil.error("crabapple-commons-UrlUtil_paramsParser_1", "参数不合法", params);
                 continue;
             }
             String[] arr = StringUtil.split(param, "=");

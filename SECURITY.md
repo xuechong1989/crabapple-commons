@@ -8,7 +8,7 @@
 
 如发现安全漏洞或密钥泄露风险，请勿公开提交 Issue，可通过以下任一方式私下报告：
 
-- 通过 GitHub 的 [私密漏洞报告](https://github.com/xuechong1989/crabapple/security/advisories/new) 提交；
+- 通过 GitHub 的 [私密漏洞报告](https://github.com/xuechong1989/crabapple-commons/security/advisories/new) 提交；
 - 发送邮件至 632801102@qq.com。
 
 建议在报告中包含：问题描述、影响范围、复现步骤及可能的修复建议。
