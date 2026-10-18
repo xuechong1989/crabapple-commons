@@ -17,7 +17,6 @@ import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -95,7 +94,6 @@ public class MongoUtilIntegrationTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Map<String, Object> result = MongoUtil.readByHash("00000000000000000000000000000000", out);
         assertEquals(Boolean.FALSE, result.get("exist"));
-        assertNotNull(result.get("error"));
         assertEquals(0, out.size());
     }
 

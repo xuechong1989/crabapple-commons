@@ -164,6 +164,7 @@ public final class MongoUtil {
             p_collectionFile = null;
             p_client = null;
             p_initialized = false;
+        p_encryptKey = null;
             LogUtil.error("MongoUtil_init_t3", throwable, "MongoDB连接失败", config.getDatabase());
             throw new IllegalStateException("MongoDB初始化失败", throwable);
         }
@@ -195,6 +196,7 @@ public final class MongoUtil {
         p_collectionInfo = null;
         p_collectionFile = null;
         p_initialized = false;
+        p_encryptKey = null;
         FILE_LOCKS.clear();
         INDEXED_COLLECTIONS.clear();
         try {
