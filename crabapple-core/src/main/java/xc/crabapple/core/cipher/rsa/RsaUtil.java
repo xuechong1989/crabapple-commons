@@ -103,7 +103,8 @@ public final class RsaUtil {
             final String str = new String(tmp2Bytes);
             return str;
         }catch(Throwable throwable){
-            LogUtil.error("RsaUtil_decrypt_t1", throwable, "RSA解密失败", privateKeyStr);
+            // 安全要求：日志中不得输出私钥等密钥材料，仅记录异常与必要的定位信息
+            LogUtil.error("RsaUtil_decrypt_t1", throwable, "RSA解密失败");
             return "";
         }
     }
@@ -165,7 +166,8 @@ public final class RsaUtil {
             final PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
             return privateKey;
         }catch(Throwable throwable){
-            LogUtil.error("RsaUtil_getPrivateKey_t1", throwable, "获取RSA私钥失败", privateKeyStr);
+            // 安全要求：日志中不得输出私钥等密钥材料
+            LogUtil.error("RsaUtil_getPrivateKey_t1", throwable, "获取RSA私钥失败");
             return null;
         }
     }

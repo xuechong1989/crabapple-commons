@@ -48,10 +48,16 @@ public final class SpringbootUtil {
             LogUtil.init("logback", "debug");
             setJarRootPath();
             SpringApplication springApplication = new SpringApplication(applicationClass);
-            String result = PropertiesUtil.loadPropertiesByRouter(routerUrl, sm4key);
+            String result;
+            if(StringUtil.isBlank(routerUrl)){
+                // 开源/本地开发默认：不依赖外部路由 conf，直接从 classpath 或工作目录加载 application.properties
+                result = PropertiesUtil.loadPropertiesFile("application.properties") ? "ok" : "error@application_properties_no_found";
+            }else{
+                result = PropertiesUtil.loadPropertiesByRouter(routerUrl, sm4key);
+            }
             if(!StringUtil.startsWith(result, "ok")){
                 LogUtil.error("SpringbootUtil_start_1", "配置文件加载失败，系统无法启动", routerUrl);
-                throw new RuntimeException("配置文件加载失败，系统无法启动");
+                throw new RuntimeException("配置文件加载失败，系统无法启动：请提供 application.properties 或 router.conf");
             }
             Map<String, Object> map = new HashMap<>();
             Map<String, String> propertiesMap = PropertiesUtil.getPropertiesMap();

@@ -81,7 +81,7 @@
                             <rules>
                                 <requireJavaVersion>
                                     <version>[21,)</version>
-                                    <message>crabapple-21 需要 JDK 21 及以上</message>
+                                    <message>crabapple 需要 JDK 21 及以上</message>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
                                     <version>[3.9,)</version>
@@ -94,12 +94,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <!-- 与 crabapple-core 中的 ci profile 对应，避免 -P ci 时提示 profile 不存在 -->
-    <profiles>
-        <profile>
-            <id>ci</id>
-        </profile>
-    </profiles>
 
 </project>

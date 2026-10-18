@@ -35,8 +35,11 @@ crabapple（中文名“海棠果”）是一套面向服务端开发的通用 J
 ### 构建
 
 ```shell
-mvn clean install
+mvn clean verify
 ```
+
+> PDF/A 转换相关类（`PdfaUtil`、`PdfSpireUtil`）默认不参与编译，以保证默认构建只依赖 Maven Central。
+> 如需启用，请先确认 Spire.PDF 的授权条款，再执行 `mvn clean verify -Ppdf-spire`。
 
 ### 引入依赖
 
@@ -82,7 +85,7 @@ boolean blank = StringUtil.isBlank("");
 ## 目录结构
 
 ```
-crabapple-21-open
+crabapple
 ├── crabapple-core        核心类库（本仓库唯一模块）
 │   └── src/main/java/xc/crabapple
 │       ├── core          通用工具（网络/文件/加解密/OCR/短信/邮件/定时/爬虫等）

@@ -1149,13 +1149,35 @@
     <profiles>
 
     <!--
-      默认启用：Spire.PDF 依赖及其仓库（e-iceblue 仓库在海外网络环境不可达，启用其它 profile 即自动停用本 profile）
+      PDF/A 转换（PdfaUtil、PdfSpireUtil）默认不参与编译，保证默认构建只依赖 Maven Central。
+      启用方式：mvn clean verify -Ppdf-spire
+      说明：Spire.PDF 为商业组件，仓库 e-iceblue 在部分网络环境不可达；启用前请先确认其授权条款。
     -->
     <profile>
         <id>pdf-spire</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.1</version>
+                    <executions>
+                        <execution>
+                            <id>add-spire-source</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>add-source</goal>
+                            </goals>
+                            <configuration>
+                                <sources>
+                                    <source>src/main/spire/java</source>
+                                </sources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </build>
         <repositories>
             <repository>
                 <id>com.e-iceblue</id>
@@ -1170,25 +1192,6 @@
                 <optional>true</optional>
             </dependency>
         </dependencies>
-    </profile>
-
-    <!-- CI 环境使用：不拉取 e-iceblue 依赖，排除依赖 Spire.PDF 的源码（PDF/A 转换、HTML转PDFA功能不参与编译） -->
-    <profile>
-        <id>ci</id>
-        <build>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <excludes>
-                            <exclude>**/PdfSpireUtil.java</exclude>
-                            <exclude>**/PdfaUtil.java</exclude>
-                        </excludes>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </build>
     </profile>
 
     </profiles>

@@ -10,11 +10,11 @@
 ## 构建与测试
 
 ```shell
-# 编译并运行单元测试
+# 编译并运行单元测试（默认只依赖 Maven Central）
 mvn clean verify
 
-# 跳过 spire.pdf 等需访问外网私有仓库的可选依赖
-mvn clean verify -P ci
+# 可选：启用 PDF/A 转换（会引入商业组件 Spire.PDF，需自行确认授权）
+mvn clean verify -Ppdf-spire
 ```
 
 ## 提交 Issue
